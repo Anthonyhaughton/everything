@@ -1,5 +1,7 @@
 import os
+
 from art import logo
+
 print(logo)
 
 bid_dict = {}

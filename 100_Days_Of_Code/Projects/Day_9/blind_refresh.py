@@ -1,5 +1,6 @@
-from art import logo
 import os
+
+from art import logo
 
 print(logo)
 
