@@ -1,0 +1,41 @@
+str - a line of text
+int - a number with out a decimal point
+list - a way to store multi values in the same place
+float - number with a decimal point
+def - Define
+scope - location to where a vars value is valid
+return - return a value from yourself
+bool - T or False
+range - starts @ 0 and to TO not THROUGH the number ie range(3) = 0,1,2
+break - breaks out of while loop when number is met.
+len - will tell you the length of a list
+dict - dictionary. Data structue that allows you to assocaite one value with another
+
+
+
+Conditionals:
+    if
+    elif
+    else
+and
+or
+% - remainder
+bool - only can be true or false
+
+loops:
+    while - one way to express a loop.
+    for -
+
+
+Varaible Scope -
+L = Local - Only avail inside the def function
+E = Enclosing
+G = Global - Avail inside and outside functions
+B = Built-in
+
+try =
+except =
+pass = catch it but ignore it
+
+Libraries - code that has already been written by others or your own
+    modules - a lib that has 1 or more func/features
