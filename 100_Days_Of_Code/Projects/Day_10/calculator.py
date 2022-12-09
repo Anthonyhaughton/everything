@@ -1,4 +1,5 @@
 # Calculator Operators
+from art import logo
 
 def add(n1, n2):
     '''Addition'''
@@ -23,35 +24,32 @@ operations = {
     '/': divide,
 }
 
-func = operations['+']
-func(3, 2)
+# Putting all this into a calc function and being able to call itself to start over from the top is called 'recursion'
 
-num1 = int(input('What is the first number?: '))
+def calculator():
+    print(logo)
+    num1 = float(input('What is the first number?: '))
 
-for symbol in operations:
-    print(symbol)
+    for symbol in operations:
+        print(symbol)
 
-num2 = int(input('What is the second number?: '))
+    should_continue = True
 
-operation_symbol = input('Pick an operation from the line above: ')
+    while should_continue:
+        operation_symbol = input('Pick an operation: ')
+        num2 = float(input('What is the next number?: '))
+        calcution_func = operations[operation_symbol]
+        anwser = calcution_func(num1, num2)
 
-calcution_func = operations[operation_symbol]
-anwser = calcution_func(num1, num2)
+        print(f'{num1} {operation_symbol} {num2} = {anwser}')
 
+        question = input(f'Type "y" to continue calculating with {anwser} or type "n" to start a new calculation or type "q" to quit: ')
+        if question == 'y':
+            num1 = anwser
+        elif question == 'q':
+            break
+        else: 
+            should_continue = False
+            calculator()
 
-# if operation_symbol == '+':
-#     anwser = add(num1, num2)
-# elif operation_symbol == '-':
-#     anwser = subtract(num1, num2)
-# elif operation_symbol == '*':
-#     anwser = multiply(num1, num2)
-# elif operation_symbol == '/':
-#     anwser = divide(num1, num2)
-
-print(f'{num1} {operation_symbol} {num2} = {anwser}')
-
-
-
-
-
-
+calculator()
