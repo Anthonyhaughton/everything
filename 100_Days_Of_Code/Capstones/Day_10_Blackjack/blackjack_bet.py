@@ -64,7 +64,7 @@ def compare(user_score, computer_score):
         return f'Push!'
     elif computer_score == 0:
         return f'Computer has Blackjack, you lose!'
-    elif computer_score == 0:
+    elif user_score == 0:
         return f'You have Blackjack, you win!'
     elif user_score > 21:
         return f'You bust!'
@@ -101,6 +101,7 @@ def play_game(balance):
         computer_cards.append(deal_card())
 
     while not is_over:
+        winnings = 0
         user_score = calculate_score(user_cards)
         computer_score = calculate_score(computer_cards)
         winnings = check_winnings(bet_amount, user_score, computer_score)
@@ -131,6 +132,6 @@ def main():
     while input('Press Enter to deal or "q" to quit: ') == '':
         os.system('cls')
         balance = deposit()
-        balance += play_game(balance)
+        play_game(balance)
 
 main()
