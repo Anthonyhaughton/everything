@@ -12,18 +12,18 @@ COLS = 3
 
 # Creat a dict of all the symbols and how freq they appear
 symbol_count = {
-    'A': 2,
-    'B': 4,
-    'C': 6,
-    'D': 8
+    'A': 4,
+    'B': 6,
+    'C': 8,
+    'D': 10
 }
 
 # A dict to determine the value of the win
 symbol_value = {
-    'A': 5,
-    'B': 4,
-    'C': 3,
-    'D': 2
+    'A': 12,
+    'B': 9,
+    'C': 6,
+    'D': 3
 }
 
 def check_winnings(columns, lines, bet, values):
