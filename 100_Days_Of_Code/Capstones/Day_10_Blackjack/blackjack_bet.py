@@ -77,7 +77,7 @@ def compare(user_score, computer_score):
     else:
         return f'You lose!'
 
-def play_game(#balnce):
+def play_game(balnce):
     print(logo)
     #Hint 5: Deal the user and computer 2 cards each using deal_card() and append().
     user_cards = []
