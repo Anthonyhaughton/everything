@@ -7,7 +7,6 @@ MIN_BET = 1
 # Theres a bug where if  get dealt 21(0) The dealer can deal itself 21 and I lose
 # I need to figure out how to end the game when I get dealt 21
 
-# Need to figure out how to implement this into my code to play with a buy in
 def deposit():
     while True:
         amount = input("What would you like to deposit? $")
@@ -22,7 +21,6 @@ def deposit():
 
     return amount
 
-# Need to figure out how to implement this into my code to play with a buy in
 def get_bet():
     # Create while loop to let user keep depositing money
     while True:
