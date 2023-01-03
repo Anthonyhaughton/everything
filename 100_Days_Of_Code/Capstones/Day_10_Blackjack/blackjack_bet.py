@@ -75,7 +75,7 @@ def compare(user_score, computer_score):
     else:
         return f'You lose!'
 
-def check_winnings(bet_amount, user_score, computer_score):
+def check_winnings(balance,bet_amount, user_score, computer_score):
     winnings = 0
     if user_score > computer_score:
         winnings = bet_amount * 2
@@ -89,8 +89,8 @@ def play_game(balance):
     user_cards = []
     computer_cards = []
     is_over = False
-    amount = deposit()
     bet_amount = get_bet()
+    amount = balance
     
     if bet_amount > balance:
         print(f"You do not have enough to bet that amount, your current balance is: ${balance}")
@@ -101,10 +101,11 @@ def play_game(balance):
         computer_cards.append(deal_card())
 
     while not is_over:
-        winnings = 0
+        
         user_score = calculate_score(user_cards)
         computer_score = calculate_score(computer_cards)
         winnings = check_winnings(bet_amount, user_score, computer_score)
+        
         print(f'Your cards are {user_cards}, current score: {user_score}')
         print(f'Computers first card is: {computer_cards[0]}')
 
@@ -126,7 +127,12 @@ def play_game(balance):
     print(f'Your final hand is: {user_cards} with a score of: {user_score}')
     print(f'The computers final hand is: {computer_cards} with a score of: {computer_score}')
     print(compare(user_score, computer_score))
+    if user_score > computer_score:
+        print(f'You bet: ${bet_amount} and won: ${winnings}')
+    else:
+        print(f'You bet: ${bet_amount} and lost: ${bet_amount}')
     print()
+    print(amount)
 
 def main():
     while input('Press Enter to deal or "q" to quit: ') == '':
