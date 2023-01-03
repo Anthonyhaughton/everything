@@ -259,3 +259,27 @@
 
 
 # print(format_name(input('What is your first name? '), input('What is your last name? ')))
+
+
+############### Day 12 ############
+#Scope
+
+
+
+# Global Scope can be accessed anywhere
+
+enemies = 1
+
+# Local Scope can only be accessed in a func (while, def, etc..)
+
+def increase_enemies():
+    enemies = 2 
+    print(f'enemies inside the func: {enemies}')
+    
+increase_enemies()
+print(f'enemies outside the func {enemies}')
+
+# GLobal Constants are values that never change and are written in caps
+
+PI = 3.14159
+URL = 'google.com'
