@@ -5,7 +5,7 @@ print(logo)
 print('Welcome to the Number Guessing Game!')
 print("I'm thinking of a number between 1 and 100.")
 
-difficulty = input('Choose a diffculty. Type "easy or "hard": ')
+difficulty = input('Choose a difficulty. Type "easy or "hard": ')
 if difficulty == 'easy':
     number_guess = 10 
 else:
@@ -23,7 +23,7 @@ while True:
             if int(guess) == number:
                 print(f'You got it! The answer was {number}, you win!')
                 break
-            
+
             elif int(guess) > number:
                 print('Too high.')
                 print('Guess again')
