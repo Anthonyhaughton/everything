@@ -19,7 +19,7 @@ print(number)
 while True:
     guess = input('Make a guess: ')
     try:
-        if guess.isdigit() == True:
+        if guess.isdigit():
             if int(guess) == number:
                 print(f'You got it! The answer was {number}, you win!')
                 break
