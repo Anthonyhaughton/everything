@@ -19,7 +19,7 @@ def commit_and_push():
     commit_message = input("Enter commit message: ")
     
     # Commit the changes
-    subprocess.run(["git", "commit", "-m", commit_message])
+    subprocess.run(["git", "commit", "-a", "-m", commit_message])
     
     # Push to the repository
     subprocess.run(["git", "push"])
