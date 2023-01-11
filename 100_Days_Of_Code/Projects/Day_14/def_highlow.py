@@ -5,6 +5,8 @@ from game_data import data
 import os
 
 print(logo)
+   
+
 
 def get_celeb():
     rand_dict = random.choice(data)
@@ -14,10 +16,37 @@ def get_celeb():
     followers = rand_dict['follower_count']
     return name, desc, country, followers
 
+def compare_followers(choice, user_score):
+    global celeb1
+    global celeb2
+    
+    if choice == 'a' or choice == 'A':
+        if celeb1[3] > celeb2[3]:
+            os.system('cls')
+            print(f'Correct {celeb1[0]} has {celeb1[3]}k followers and {celeb2[0]} has {celeb2[3]}k.')
+            print()
+            user_score += 1
+            celeb1 = get_celeb()
+            return 
+        
+        else:
+            print('Sorry that is incorrect')
+            return False
+    elif user_pick == 'b' or user_pick == 'B':
+        if celeb2[3] > celeb1[3]:
+            os.system('cls')
+            print(f'Correct {celeb2[0]} has {celeb2[3]}k followers and {celeb1[0]} has {celeb1[3]}k.')
+            print()
+            user_score += 1
+            celeb2 = get_celeb()
+            return True
+        else:
+            print('Sorry that is incorrect')
+            return False
+    
 celeb1 = get_celeb()
 celeb2 = get_celeb()
-
-score = 0 
+score = 0    
 
 while True:
     print(f'Your score is: {score}')
@@ -30,29 +59,8 @@ while True:
 
     user_pick = input("Who has more followers? Type 'A' or 'B': ")
     print()
-
-    if user_pick == 'a' or user_pick == 'A':
-        if celeb1[3] > celeb2[3]:
-            os.system('cls')
-            print(f'Correct {celeb1[0]} has {celeb1[3]}k followers and {celeb2[0]} has {celeb2[3]}k.')
-            print()
-            score += 1
-            celeb1 = get_celeb()
-            continue
-        else:
-            print('Sorry that is incorrect')
-            break
-    elif user_pick == 'b' or user_pick == 'B':
-        if celeb2[3] > celeb1[3]:
-            os.system('cls')
-            print(f'Correct {celeb2[0]} has {celeb2[3]}k followers and {celeb1[0]} has {celeb1[3]}k.')
-            print()
-            score += 1
-            celeb2 = get_celeb()
-            continue
-        else:
-            print('Sorry that is incorrect')
-            break
+    compare_followers(user_pick, score)
+    
             
 
 
