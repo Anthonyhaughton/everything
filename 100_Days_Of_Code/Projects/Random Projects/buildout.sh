@@ -135,14 +135,14 @@ if [ "$subscribe" = "y" ]; then
         subscription-manager repos --enable="rhel-*-optional-rpms" --enable="rhel-*-extras-rpms"  --enable="rhel-ha-for-rhel-*-server-rpms"
 
         # Install the CUDA Repo GPG Key
-        distribution=$(. /etc/os-release;echo $ID`rpm -E "%{?rhel}%{?fedora}"`)
+        distribution=$(. /etc/os-release;echo "$ID"'rpm -E "%{?rhel}%{?fedora}"')
 
         # Setup the CUSA repo
         ARCH=$( /bin/arch )
         yum-config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/$distribution/${ARCH}/cuda-$distribution.repo
 
         # Make sure the correct kernels are present for the install
-        dnf install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
+        dnf install -y kernel-devel-"$(uname -r)" kernel-headers-"$(uname -r)"
 
         # Update repo cache and install nvidia driver
         dnf clean expire-cache
