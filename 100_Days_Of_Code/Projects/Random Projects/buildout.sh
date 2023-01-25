@@ -128,7 +128,8 @@ if [ "$subscribe" = "y" ]; then
         
         # Reboot
         echo "The machine needs to be rebooted so DKMS can be updated. Please reboot after the script has finished."
-
+        nvidia-smi
+        
 else
     echo "The repository will have to be set up manually."
 	sleep 2
