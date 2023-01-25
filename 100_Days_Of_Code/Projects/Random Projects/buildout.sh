@@ -102,6 +102,33 @@ if [ "$subscribe" = "y" ]; then
     # Update the machine
     dnf update
 
+    # Ask to download Nvidia Drivers
+    echo -n "Do you want to install the latest Nvidia drivers? (y/n)"
+    read drivers
+
+    if [ "$drivers" = "y"]; then
+
+        # Download dependency on EPEL for DKMS and enable optional repos
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        subscription-manager repos --enable="rhel-*-optional-rpms" --enable="rhel-*-extras-rpms"  --enable="rhel-ha-for-rhel-*-server-rpms"
+
+        # Install the CUDA Repo GPG Key
+        distribution=$(. /etc/os-release;echo $ID`rpm -E "%{?rhel}%{?fedora}"`)
+
+        # Setup the CUSA repo
+        ARCH=$( /bin/arch )
+        yum-config-manager --add-repo http://developer.download.nvidia.com/compute/cuda/repos/$distribution/${ARCH}/cuda-$distribution.repo
+
+        # Make sure the correct kernels are present for the install
+        dnf install -y kernel-devel-$(uname -r) kernel-headers-$(uname -r)
+
+        # Update repo cache and install nvidia driver
+        dnf clean expire-cache
+        yum install -y nvidia-driver-latest-DKMS
+        
+        # Reboot
+        echo "The machine needs to be rebooted so DKMS can be updated. Please reboot after the script has finished."
+
 else
     echo "The repository will have to be set up manually."
 	sleep 2
@@ -134,7 +161,60 @@ else
 	elif [ "$where_repo" = "local" ]; then
 		
 		# Create a directory to mount the repos 
-		echo "Creating directory to mount local repo at /mnt/usb/rhel_repos"
+		echo "Creating directory to mount local repo. Mount your drive at /mnt/usb/rhel_repos"
 		mkdir -p /mnt/usb/rhel_repos
+
+        # Configure local redhat.repo file for BaseOS
+		echo "[rhel-8-for-x86_64-baseos-rpms]" > /etc/yum.repos.d/redhat.repo
+		echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" >> /etc/yum.repos.d/redhat.repo
+		echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-baseos-rpms" >> /etc/yum.repos.d/redhat.repo
+		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
+        echo "gpgcheck=0" >> /etc/yum.repos.d/redhat.repo
 		
+		# Put a space in between the two repos
+		printf "\n" >> /etc/yum.repos.d/redhat.repo
+		
+		# Configure local redhat.repo file for AppStream
+		echo "[rhel-8-for-x86_64-appstream-rpms]" >> /etc/yum.repos.d/redhat.repo
+		echo "name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)" >> /etc/yum.repos.d/redhat.repo
+		echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-appstream-rpms" >> /etc/yum.repos.d/redhat.repo>> /etc/yum.repos.d/redhat.repo
+		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
+        echo "gpgcheck=0" >> /etc/yum.repos.d/redhat.repo
+
+# Ask to install env modules 
+echo -n "Do you want to configure modules? (y/n) "
+read env_modules
+
+if [ "$env_modules" = "y"]; then
+    
+    # Install the package
+    dnf install environment-modules -y
+
+    # provide an example module file to be copied and used for any program
+    echo "Env Modules were installed you can configure the module files at /usr/share/Modules/modulefiles"
+    echo "There is an example on how to make module files in the path, you can replace with your own application"
+    sleep 5
+
+    # Make example mod file
+    touch /usr/share/Modules/modulefiles/example
+    echo "#%Module -*- tcl -*-" > /usr/share/Modules/modulefiles/example
+    echo "##" >> /usr/share/Modules/modulefiles/example
+    echo "## modulefile" >> /usr/share/Modules/modulefiles/example
+    echo "##" >> /usr/share/Modules/modulefiles/example
+    echo "proc ModulesHelp { } {" >> /usr/share/Modules/modulefiles/example
+    printf "\n" >> /usr/share/Modules/modulefiles/example
+    echo "  puts stderr '\tLoads (Application)/(version)" >> /usr/share/Modules/modulefiles/example
+    echo "}" >> /usr/share/Modules/modulefiles/example
+    printf "\n" >> /usr/share/Modules/modulefiles/example
+    echo "module-whatis 'Loads (Application)(Version)'" >> /usr/share/Modules/modulefiles/example
+    echo "conflict (Application)" >> /usr/share/Modules/modulefiles/example
+    printf "\n" >> /usr/share/Modules/modulefiles/example
+    echo "set              version            (version)" >> /usr/share/Modules/modulefiles/example
+    echo "set              name               (Application)" >> /usr/share/Modules/modulefiles/example
+    echo "set              root               /opt/$ name/$ version" >> /usr/share/Modules/modulefiles/example
+    printf "\n" >> /usr/share/Modules/modulefiles/example
+    echo "prepend-path      PATH              $ root/bin" >> /usr/share/Modules/modulefiles/example
+    echo "prepend-path      LIBRARY_PATH      $ root/lib" >> /usr/share/Modules/modulefiles/example
+
+
 fi
