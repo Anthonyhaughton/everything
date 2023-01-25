@@ -3,55 +3,58 @@
 echo "Arete's Red Hat: 8 Build Helper"
 echo "Written by Anthony Haughton"
 echo "Notes:  Script must be run as root"
+printf "\n"
 
 # Prompt for hostname
 echo -n "Enter the hostname of the machine: "
-read hostname
+read -r hostname
 
 # Set hostname and restart service
-hostnamectl set-hostname $hostname
+hostnamectl set-hostname "$hostname"
 systemctl restart systemd-hostnamed
 
 # Prompt for IP configuration type
 echo -n "Is the IP address going to be static or DHCP? (static/dhcp) "
-read ip_config
+read -r ip_config
 
 if [ "$ip_config" = "static" ]; then
     # Prompt for IP information
     echo -n "Enter the IP address: "
-    read ip
+    read -r ip
     echo -n "Enter the subnet mask: "
-    read subnet
+    read -r subnet
     echo -n "Enter the gateway: "
-    read gateway
+    read -r gateway
     echo -n "Enter the primary DNS server: "
-    read dns1
+    read -r dns1
     echo -n "Enter the secondary DNS server: "
-    read dns2
+    read -r dns2
     echo -n "Enter the network interface to configure (e.g. ens3): "
-    read interface
+    read -r interface
 
     # Set IP information
-    nmcli connection modify $interface ipv4.addresses "$ip/$subnet"
-    nmcli connection modify $interface ipv4.gateway "$gateway"
-    nmcli connection modify $interface ipv4.dns "$dns1 $dns2"
+    nmcli connection modify "$interface" ipv4.addresses "$ip/$subnet"
+    nmcli connection modify "$interface" ipv4.gateway "$gateway"
+    nmcli connection modify "$interface" ipv4.dns "$dns1 $dns2"
 
 elif [ "$ip_config" = "dhcp" ]; then
     echo -n "Enter the network interface to configure (e.g. ens3): "
-    read interface
-    nmcli connection modify $interface ipv4.method auto
+    read -r interface
+    nmcli connection modify "$interface" ipv4.method auto
 else
     echo "Invalid input"
 
+fi
+
 # Display the new IP settings
-ip a show dev $interface
+ip a show dev "$interface"
 
 # Wait 10 seconds
 sleep 10
 
 # Check if machine should be added to domain
 echo -n "Do you want to add this machine to the domain? (y/n) "
-read add_to_domain
+read -r add_to_domain
 
 if [ "$add_to_domain" = "y" ]; then
     # Discover the realm
@@ -59,12 +62,12 @@ if [ "$add_to_domain" = "y" ]; then
 
     # Prompt for username and realm
     echo -n "Enter the username: "
-    read username
+    read -r username
     echo -n "Enter the realm: "
-    read realm
+    read -r realm
 
     # Join the realm
-    realm join $realm -U $username
+    realm join "$realm" -U "$username"
 
     # Modify sssd.conf
     sed -i 's/services.*/services = nss, pam, ssh, autofs/' /etc/sssd/sssd.conf
@@ -75,9 +78,11 @@ if [ "$add_to_domain" = "y" ]; then
     # Restart sssd service
     systemctl restart sssd
 
+fi
+
 # Prompt Sever or Workstation to update sudoers
 echo -n "Is this a server or workstation? (server/workstation) "
-read machine_type
+read -r machine_type
 
 if [ "$machine_type" = "server" ]; then
     # Create file for server admins
@@ -90,17 +95,19 @@ elif [ "$machine_type" = "workstation" ]; then
 else
     echo "Invalid input"
 
+fi
+
 # Prompt to subscribe to Red Hat Repo Manager
 echo -n "Do you want to subscribe this machine to the Red Hat Repo Manager? (y/n) "
-read subscribe
+read -r subscribe
 
 if [ "$subscribe" = "y" ]; then
     # Prompt for email
     echo -n "What is your email? "
-    read email
+    read -r email
 
     # Register and attach subscription
-    subscription-manager register --username $email --auto-attach
+    subscription-manager register --username "$email" --auto-attach
 
     # Print current subscription status
     subscription-manager status
@@ -117,9 +124,11 @@ if [ "$subscribe" = "y" ]; then
 
     # Ask to download Nvidia Drivers
     echo -n "Do you want to install the latest Nvidia drivers? (y/n)"
-    read drivers
+    read -r drivers
 
-    if [ "$drivers" = "y"]; then
+
+
+    if [ "$drivers" = "y" ]; then
 
         # Download dependency on EPEL for DKMS and enable optional repos
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -142,35 +151,44 @@ if [ "$subscribe" = "y" ]; then
         # Reboot
         echo "The machine needs to be rebooted so DKMS can be updated. Please reboot after the script has finished."
         nvidia-smi
+    
+    fi
 
-else
+else 
     echo "The repository will have to be set up manually."
 	sleep 2
+
+fi
 	
 	# Figure out if repos will be pulled from server or if they will be installed locally
 	echo -n "Are you going to connect the machine to a repo server or do you have the repos local? (server/local) "
-	read where_repo
+	read -r where_repo
 	
 	if [ "$where_repo" = "server" ]; then
 	
 		# Ask user for the IP of the repo server
 		echo -n "What server will you be pulling the repos from? Enter the IP."
-		read repo_server
+		read -r repo_server
 		
 		# Configure the redhat.repo file for BaseOS
-		echo "[rhel-8-for-x86_64-baseos-rpms]" > /etc/yum.repos.d/redhat.repo
-		echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" >> /etc/yum.repos.d/redhat.repo
-		echo "baseurl = http://$repo_server" >> /etc/yum.repos.d/redhat.repo
-		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
-		
-		# Put a space in between the two repos
-		printf "\n" >> /etc/yum.repos.d/redhat.repo
+        {
+		    echo "[rhel-8-for-x86_64-baseos-rpms]" 
+		    echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" 
+		    echo "baseurl = http://$repo_server/rhel-8-for-x86_64-baseos-rpms" 
+		    echo "enabled=1" 
+            # Put a space in between the two repos
+		    printf "\n" >> /etc/yum.repos.d/redhat.repo
+        } > /etc/yum.repos.d/redhat.repo
+
 		
 		# Configure the redhat.repo file for AppStream
-		echo "[rhel-8-for-x86_64-appstream-rpms]" >> /etc/yum.repos.d/redhat.repo
-		echo "name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)" >> /etc/yum.repos.d/redhat.repo
-		echo "baseurl = http://$repo_server" >> /etc/yum.repos.d/redhat.repo>> /etc/yum.repos.d/redhat.repo
-		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
+        {
+            echo "[rhel-8-for-x86_64-appstream-rpms]" 
+            echo "name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)" 
+            echo "baseurl = http://$repo_server/rhel-8-for-x86_64-appstream-rpms" 
+            echo "enabled=1" 
+        } >> /etc/yum.repos.d/redhat.repo
+    
 	
 	elif [ "$where_repo" = "local" ]; then
 		
@@ -179,56 +197,61 @@ else
 		mkdir -p /mnt/usb/rhel_repos
 
         # Configure local redhat.repo file for BaseOS
-		echo "[rhel-8-for-x86_64-baseos-rpms]" > /etc/yum.repos.d/redhat.repo
-		echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" >> /etc/yum.repos.d/redhat.repo
-		echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-baseos-rpms" >> /etc/yum.repos.d/redhat.repo
-		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
-        echo "gpgcheck=0" >> /etc/yum.repos.d/redhat.repo
+        {
+            echo "[rhel-8-for-x86_64-baseos-rpms]" 
+            echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" 
+            echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-baseos-rpms" 
+            echo "enabled=1" 
+            echo "gpgcheck=0"
+            # Put a space in between the two repos
+            printf "\n" >> /etc/yum.repos.d/redhat.repo
+        } > /etc/yum.repos.d/redhat.repo
 		
-		# Put a space in between the two repos
-		printf "\n" >> /etc/yum.repos.d/redhat.repo
 		
 		# Configure local redhat.repo file for AppStream
-		echo "[rhel-8-for-x86_64-appstream-rpms]" >> /etc/yum.repos.d/redhat.repo
-		echo "name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)" >> /etc/yum.repos.d/redhat.repo
-		echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-appstream-rpms" >> /etc/yum.repos.d/redhat.repo>> /etc/yum.repos.d/redhat.repo
-		echo "enabled=1" >> /etc/yum.repos.d/redhat.repo
-        echo "gpgcheck=0" >> /etc/yum.repos.d/redhat.repo
-
+        {
+            echo "[rhel-8-for-x86_64-appstream-rpms]" 
+            echo "name = Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)" 
+            echo "baseurl = file:///mnt/usb/rhel_repos/rhel-8-for-x86_64-appstream-rpms" 
+            echo "enabled=1" 
+            echo "gpgcheck=0" 
+        } >> /etc/yum.repos.d/redhat.repo
+    fi
 # Ask to install env modules 
 echo -n "Do you want to configure modules? (y/n) "
-read env_modules
+read -r env_modules
 
-if [ "$env_modules" = "y"]; then
+if [ "$env_modules" = "y" ]; then
     
     # Install the package
     dnf install environment-modules -y
 
     # provide an example module file to be copied and used for any program
-    echo "Env Modules were installed you can configure the module files at /usr/share/Modules/modulefiles"
-    echo "There is an example on how to make module files in the path, you can replace with your own application"
+    echo "Env Modules were installed, you can configure the module files at /usr/share/Modules/modulefiles"
+    echo "There is an example on how to make a module files in the path, you can replace with your own application"
     sleep 5
 
     # Make example mod file
     touch /usr/share/Modules/modulefiles/example
-    echo "#%Module -*- tcl -*-" > /usr/share/Modules/modulefiles/example
-    echo "##" >> /usr/share/Modules/modulefiles/example
-    echo "## modulefile" >> /usr/share/Modules/modulefiles/example
-    echo "##" >> /usr/share/Modules/modulefiles/example
-    echo "proc ModulesHelp { } {" >> /usr/share/Modules/modulefiles/example
-    printf "\n" >> /usr/share/Modules/modulefiles/example
-    echo "  puts stderr '\tLoads (Application)/(version)" >> /usr/share/Modules/modulefiles/example
-    echo "}" >> /usr/share/Modules/modulefiles/example
-    printf "\n" >> /usr/share/Modules/modulefiles/example
-    echo "module-whatis 'Loads (Application)(Version)'" >> /usr/share/Modules/modulefiles/example
-    echo "conflict (Application)" >> /usr/share/Modules/modulefiles/example
-    printf "\n" >> /usr/share/Modules/modulefiles/example
-    echo "set              version            (version)" >> /usr/share/Modules/modulefiles/example
-    echo "set              name               (Application)" >> /usr/share/Modules/modulefiles/example
-    echo "set              root               /opt/$ name/$ version" >> /usr/share/Modules/modulefiles/example
-    printf "\n" >> /usr/share/Modules/modulefiles/example
-    echo "prepend-path      PATH              $ root/bin" >> /usr/share/Modules/modulefiles/example
-    echo "prepend-path      LIBRARY_PATH      $ root/lib" >> /usr/share/Modules/modulefiles/example
-
+    {
+        echo "#%Module -*- tcl -*-"
+        echo "##"
+        echo "## modulefile"
+        echo "##"
+        echo "proc ModulesHelp { } {"
+        printf "\n"
+        echo "  puts stderr '\tLoads (Application)/(version)"
+        echo "}"
+        printf "\n"
+        echo "module-whatis 'Loads (Application)(Version)'"
+        echo "conflict (Application)"
+        printf "\n"
+        echo "set              version            (version)"
+        echo "set              name               (Application)"
+        echo "set              root               /opt/$ name/$ version"
+        printf "\n"
+        echo "prepend-path      PATH              $ root/bin"
+        echo "prepend-path      LIBRARY_PATH      $ root/lib"
+    } > /usr/share/Modules/modulefiles/example
 
 fi
