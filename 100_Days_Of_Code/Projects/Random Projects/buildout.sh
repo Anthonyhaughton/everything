@@ -54,6 +54,15 @@ echo -n "Do you want to add this machine to the domain? (y/n) "
 read add_to_domain
 
 if [ "$add_to_domain" = "y" ]; then
+    # Discover the realm
+    realm discover
+
+    # Prompt for username and realm
+    echo -n "Enter the username: "
+    read username
+    echo -n "Enter the realm: "
+    read realm
+
     # Join the realm
     realm join $realm -U $username
 
