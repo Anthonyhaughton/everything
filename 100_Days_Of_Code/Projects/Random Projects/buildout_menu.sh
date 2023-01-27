@@ -7,7 +7,7 @@ do
 
     echo
     echo
-    echo "Arete's Red Hat: 8 Build Helper"
+    echo "Arete's Red Hat 8 Build Helper"
     echo "Written by Anthony Haughton"
     echo "Notes:  Script must be run as root"
     echo "---------------------------------------------------------------------"
@@ -21,7 +21,7 @@ do
     echo "---------------------------------------------------------------------"
     read -p "Enter your selection: " menu
 
-    if [ "$menu" = "1" ]; then
+    if [ $menu = "1" ]; then
         # Prompt for hostname
         echo -n "Enter the hostname of the machine: "
         read -r hostname
@@ -77,7 +77,7 @@ do
         echo -n "Do you want to add this machine to the domain? (y/n) "
         read -r add_to_domain
 
-        if [ "$add_to_domain" = "y" ]; then
+        if [ $add_to_domain = "y" ]; then
             # Discover the realm
             realm discover
 
@@ -126,7 +126,7 @@ do
         echo -n "Do you want to subscribe this machine to the Red Hat Repo Manager? (y/n) "
         read -r subscribe
 
-        if [ "$subscribe" = "y" ]; then
+        if [ $subscribe = "y" ]; then
             # Prompt for email
             echo -n "What is your email? "
             read -r email
@@ -164,7 +164,7 @@ do
 
 
 
-            if [ "$drivers" = "y" ]; then
+            if [ $drivers = "y" ]; then
 
                 # Download dependency on EPEL for DKMS and enable optional repos
                 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -200,7 +200,7 @@ do
             echo -n "Are you going to connect the machine to a repo server or do you have the repos local? (server/local) "
             read -r where_repo
             
-            if [ "$where_repo" = "server" ]; then
+            if [ $where_repo = "server" ]; then
             
                 # Ask user for the IP of the repo server
                 echo -n "What server will you be pulling the repos from? Enter the IP. "
@@ -242,7 +242,7 @@ do
                 dnf update
             
             
-            elif [ "$where_repo" = "local" ]; then
+            elif [ $where_repo = "local" ]; then
                 
                 # Create a directory to mount the repos 
                 echo "Creating directory to mount local repo. Mount your drive at /mnt/usb/rhel_repos"
@@ -279,7 +279,7 @@ do
         echo -n "Do you want to configure modules? (y/n) "
         read -r env_modules
 
-        if [ "$env_modules" = "y" ]; then
+        if [ $env_modules = "y" ]; then
             
             # Install the package
             dnf install environment-modules -y
