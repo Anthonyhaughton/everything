@@ -167,7 +167,7 @@ fi
 	if [ "$where_repo" = "server" ]; then
 	
 		# Ask user for the IP of the repo server
-		echo -n "What server will you be pulling the repos from? Enter the IP."
+		echo -n "What server will you be pulling the repos from? Enter the IP. "
 		read -r repo_server
 		
 		# Configure the redhat.repo file for BaseOS
