@@ -78,8 +78,6 @@ do
         read -r add_to_domain
 
         if [ $add_to_domain = "y" ]; then
-            # Discover the realm
-            realm discover
 
             # Prompt for username and realm
             echo -n "Enter the username: "
@@ -89,6 +87,9 @@ do
 
             # Join the realm
             realm join "$realm" -U "$username"
+            echo "welcome to $realm!"
+            realm list
+            sleep 3
 
             # Modify sssd.conf
             sed -i 's/services.*/services = nss, pam, ssh, autofs/' /etc/sssd/sssd.conf
@@ -110,6 +111,8 @@ do
         if [ "$machine_type" = "server" ]; then
             # Create file for server admins
             echo "%Server Admins - Linux Servers ALL=(ALL) ALL" > /etc/sudoers.d/ad_server_admins
+            echo "Added group to sudoers"
+            sleep 3
 
         elif [ "$machine_type" = "workstation" ]; then
             # Create file for client admins
@@ -208,16 +211,20 @@ do
 
                 # Clear out repo directory
                 mv /etc/yum.repos.d/* /etc/yum.repos.d/archive
+
+                # Let's try this 
+                dnf config-manager --add-repo http://$repo_server/rhel-8-for-x86_64-baseos-rpms
+                dnf config-manager --add-repo http://$repo_server/rhel-8-for-x86_64-appstream-rpms
                 
                 # Configure the redhat.repo file for BaseOS
-                {
-                    echo "[rhel-8-for-x86_64-baseos-rpms]" 
-                    echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" 
-                    echo "baseurl = http://$repo_server/rhel-8-for-x86_64-baseos-rpms" 
-                    echo "enabled=1" 
-                    # Put a space in between the two repos
-                    printf "\n" >> /etc/yum.repos.d/redhat.repo
-                } > /etc/yum.repos.d/redhat.repo
+                # {
+                #     echo "[rhel-8-for-x86_64-baseos-rpms]" 
+                #     echo "name = Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)" 
+                #     echo "baseurl = http://$repo_server/rhel-8-for-x86_64-baseos-rpms" 
+                #     echo "enabled=1" 
+                #     # Put a space in between the two repos
+                #     printf "\n" >> /etc/yum.repos.d/redhat.repo
+                # } > /etc/yum.repos.d/redhat.repo
 
                 
                 # Configure the redhat.repo file for AppStream
