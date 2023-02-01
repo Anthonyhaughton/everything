@@ -11,12 +11,12 @@ do
     echo "Written by Anthony Haughton"
     echo "Notes:  Script must be run as root"
     echo "---------------------------------------------------------------------"
-    echo "1. Set Hostname "
-    echo "2. Set IP Information "
-    echo "3. Join Realm "
-    echo "4. Update Sudoers "
-    echo "5. Set up Repositories/ Nvidia Drivers "
-    echo "6. Configure Environment Modules "
+    echo "1.  Set Hostname "
+    echo "2.  Set IP Information "
+    echo "3.  Join Realm "
+    echo "4.  Update Sudoers "
+    echo "5.  Set up Repositories/ Nvidia Drivers "
+    echo "6.  Configure Environment Modules "
     echo "10. Exit "
     echo "---------------------------------------------------------------------"
     read -p "Enter your selection: " menu
@@ -259,7 +259,7 @@ do
                     echo "enabled=1" 
                     echo "gpgcheck=0"
                     # Put a space in between the two repos
-                    printf "\n" >> /etc/yum.repos.d/redhat.repo
+                    printf "\n"
                 } > /etc/yum.repos.d/redhat.repo
                 
                 
