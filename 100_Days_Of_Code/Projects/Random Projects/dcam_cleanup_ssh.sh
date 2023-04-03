@@ -40,27 +40,33 @@ do
 		echo -n "Do you want to make the same folder on the fast drive? y/n: "
 		read -r fast
 
+		# ssh in and make fast folders. If there is no fast drive this is just fail out and not create anything
 		if [ $fast = y ]; then
 			ssh $ssh_machine -t -q "mkdir /mnt/$ssh_machine/fast01/$folder && chown :root /mnt/$ssh_machine/fast01/$folder && chmod 2770 /mnt/$ssh_machine/fast01/$folder"
 		fi
 
+		# ssh in and set the groups of the folders
 		if [ $ask_group = y ]; then
 				echo -n "What's the group? "
 				read -r group
 			ssh $ssh_machine -t -q "chgrp $group /mnt/$ssh_machine/slow01/$folder && chgrp $group /mnt/$ssh_machine/fast01/$folder"
 		fi
 		
+		# Notify user the folders were created
 		echo ""
 		echo "The $folder folder has been created on $ssh_machine!"
 		sleep 5
-	
+
+		# Ask if they want to make another folder
 		echo "Do you want to make another folder? y/n: "
 		read -r user_choice
 
+		# Quit if they do not want to make anither folder
 		if [ $user_choice = "n" ]; then
 			exit
 		fi
 
+	# Quit if they are done
 	elif [ $menu = "10" ]; then
 		exit
 	fi
