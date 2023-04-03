@@ -55,7 +55,11 @@ do
 		sleep 5
 	
 		echo "Do you want to make another folder? y/n: "
-		read -r 
+		read -r user_choice
+
+		if [ $user_choice = "n" ]; then
+			exit
+		fi
 
 	elif [ $menu = "10" ]; then
 		exit
