@@ -37,7 +37,7 @@ do
 		ssh $ssh_machine -t -q "mkdir /mnt/$ssh_machine/slow01/$folder && chown :root /mnt/$ssh_machine/slow01/$folder && chmod 2770 /mnt/$ssh_machine/slow01/$folder"
 
 		# Ask if they want to create the same folders on the fast drive
-		echo "Do you want to make the same folder on the fast drive? y/n: "
+		echo -n "Do you want to make the same folder on the fast drive? y/n: "
 		read -r fast
 
 		if [ $fast = y ]; then
