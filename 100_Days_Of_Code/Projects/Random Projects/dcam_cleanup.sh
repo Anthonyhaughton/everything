@@ -13,7 +13,8 @@ do
 	echo "Written by Anthony Haughton"
 	echo "Notes: Script must be run as root"
 	echo "-------------------------------------------"
-	echo "1.  Make Folder"
+	echo "1.  Make Folder (Remotely)"
+	echo "2.  Make Folder (Locally)"
 	echo "10. Quit"
 	echo "-------------------------------------------"
 	read -p "Enter your selection: " menu
