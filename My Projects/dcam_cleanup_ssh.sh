@@ -1,9 +1,9 @@
 #!/bin/bash
 
 clear
-menu ="100"
+menu="100"
 
-while [ menu != "10" ]
+while [ "$menu" != "10" ]
 do
 
 	echo ""

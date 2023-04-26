@@ -2,7 +2,7 @@
 
 menu="100"
 
-while [ menu != "10" ]
+while [ "$menu" != "10" ]
 do
 
     echo
@@ -21,7 +21,7 @@ do
     echo "---------------------------------------------------------------------"
     read -p "Enter your selection: " menu
 
-    if [ $menu = "1" ]; then
+    if [ "$menu" = "1" ]; then
         # Prompt for hostname
         echo -n "Enter the hostname of the machine: "
         read -r hostname
@@ -30,7 +30,7 @@ do
         hostnamectl set-hostname "$hostname"
         systemctl restart systemd-hostnamed
     
-    elif [ $menu = "2" ]; then
+    elif [ "$menu" = "2" ]; then
 
         # Prompt for IP configuration type
         echo -n "Is the IP address going to be static or DHCP? (static/dhcp) "
@@ -71,13 +71,13 @@ do
 
         fi
     
-    elif [ $menu = "3" ]; then
+    elif [ "$menu" = "3" ]; then
 
         # Check if machine should be added to domain
         echo -n "Do you want to add this machine to the domain? (y/n) "
         read -r add_to_domain
 
-        if [ $add_to_domain = "y" ]; then
+        if [ "$add_to_domain" = "y" ]; then
 
             # Prompt for username and realm
             echo -n "Enter the username: "
@@ -102,7 +102,7 @@ do
 
         fi
 
-    elif [ $menu = "4" ]; then
+    elif [ "$menu" = "4" ]; then
 
         # Prompt Sever or Workstation to update sudoers
         echo -n "Is this a server or workstation? (server/workstation) "
@@ -123,13 +123,13 @@ do
 
         fi
 
-    elif [ $menu = "5" ]; then
+    elif [ "$menu" = "5" ]; then
 
         # Prompt to subscribe to Red Hat Repo Manager
         echo -n "Do you want to subscribe this machine to the Red Hat Repo Manager? (y/n) "
         read -r subscribe
 
-        if [ $subscribe = "y" ]; then
+        if [ "$subscribe" = "y" ]; then
             # Prompt for email
             echo -n "What is your email? "
             read -r email
@@ -167,7 +167,7 @@ do
 
 
 
-            if [ $drivers = "y" ]; then
+            if [ "$drivers" = "y" ]; then
 
                 # Download dependency on EPEL for DKMS and enable optional repos
                 yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -203,7 +203,7 @@ do
             echo -n "Are you going to connect the machine to a repo server or do you have the repos local? (server/local) "
             read -r where_repo
             
-            if [ $where_repo = "server" ]; then
+            if [ "$where_repo" = "server" ]; then
             
                 # Ask user for the IP of the repo server
                 echo -n "What server will you be pulling the repos from? Enter the IP. "
@@ -249,7 +249,7 @@ do
                 dnf update
             
             
-            elif [ $where_repo = "local" ]; then
+            elif [ "$where_repo" = "local" ]; then
                 
                 # Create a directory to mount the repos 
                 echo "Creating directory to mount local repo. Mount your drive at /mnt/usb/rhel_repos"
@@ -280,13 +280,13 @@ do
                 } >> /etc/yum.repos.d/redhat.repo
             fi
 
-    elif [ $menu = "6" ]; then
+    elif [ "$menu" = "6" ]; then
 
         # Ask to install env modules 
         echo -n "Do you want to configure modules? (y/n) "
         read -r env_modules
 
-        if [ $env_modules = "y" ]; then
+        if [ "$env_modules" = "y" ]; then
             
             # Install the package
             dnf install environment-modules -y
@@ -321,7 +321,7 @@ do
 
         fi
 
-    elif [ $menu = "10" ]; then
+    elif [ "$menu" = "10" ]; then
 
         # Exit Script
         exit
