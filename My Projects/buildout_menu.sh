@@ -8,7 +8,7 @@ do
 
     echo
     echo
-    echo "Arete's Red Hat 8 Build Helper"
+    echo "Red Hat 8 Build Helper"
     echo "Written by Anthony Haughton"
     echo "Notes:  Script must be run as root"
     echo "---------------------------------------------------------------------"
