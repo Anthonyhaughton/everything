@@ -2,6 +2,7 @@
 
 # 04/30/2023
 
+clear
 menu ="100"
 
 while [ menu != "10" ]
@@ -62,8 +63,7 @@ do
 		echo "The $folder folder has been created on $machine"
 		sleep 5
 	
-
-	elif [ $menu = "10" ]; then
+	else [ $menu = "10" ]; then
 		exit
 	fi
 

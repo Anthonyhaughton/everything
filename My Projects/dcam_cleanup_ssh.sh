@@ -1,5 +1,6 @@
 #!/bin/bash
 
+clear
 menu ="100"
 
 while [ menu != "10" ]
