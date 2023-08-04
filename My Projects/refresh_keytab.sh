@@ -20,10 +20,10 @@ sleep 2
 echo ""
 echo ""
 
-# Back up conf file and show backup file
+# Back up conf file and show backup file. Using a unique name to be safe and make sure no back up already exists
 echo "Making a backup of the sssd.conf file see below: "
-cp /etc/sssd/sssd.conf /etc/sssd/sssd.conf.bak
-ls -lh /etc/sssd/*.bak
+cp /etc/sssd/sssd.conf /etc/sssd/sssd.conf.bak_keytab_script
+ls -lh /etc/sssd/*.bak*
 sleep 3
 
 # Blank space 
@@ -47,17 +47,21 @@ do
         # Prompt for username to rejoin realm
         read -p "Enter the username: " username
 
-        # Join the realm
+        # Join the realm move sssd.conf back and restart the service
         realm join "$realm" -U "$username"
         echo ""
-        echo "welcome to $realm!"
+        echo "Welcome to $realm!"
         mv /etc/sssd/sssd.conf.bak /etc/sssd/sssd.conf
         systemctl restart sssd
+        realm list
+        echo ""
         sleep 1
 
+        # Show new keytab
         echo "Keytab should be updated to todays date: $todaysDate"
         ls -lh /etc/krb5.keytab
         sleep 3
+        # break out of infinite loop
         break
 
     else
