@@ -43,6 +43,7 @@ do
     # Induce infinite loop to make sure user has removed machine from AD
     read -p "Did you remove $machine from the domain? You must do this before you continue.. (y/n): " domain_q
 
+    # Check to make sure user said yes and if not reprompt
     if [ "$domain_q" = "y" ]; then
         sleep 1
 
