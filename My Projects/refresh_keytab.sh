@@ -12,8 +12,9 @@ echo ""
 echo "Keytab Refresh Tool"	
 echo "Written by Anthony Haughton"
 echo "Notes: Script must be run as root. Please make sure to delete the PC from AD when prompted"
+echo ""
 
-echo "The current keytab and realm is:"
+echo "The current keytab is:"
 ls -lh /etc/krb5.keytab
 sleep 2
 
@@ -52,7 +53,7 @@ do
         realm join "$realm" -U "$username"
         echo ""
         echo "Welcome to $realm!"
-        mv /etc/sssd/sssd.conf.bak /etc/sssd/sssd.conf
+        mv -f /etc/sssd/sssd.conf.bak_keytab_script /etc/sssd/sssd.conf
         systemctl restart sssd
         realm list
         echo ""
@@ -61,6 +62,7 @@ do
         # Show new keytab
         echo "Keytab should be updated to todays date: $todaysDate"
         ls -lh /etc/krb5.keytab
+        echo ""
         sleep 3
         # break out of infinite loop
         break
