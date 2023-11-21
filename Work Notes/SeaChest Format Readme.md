@@ -32,5 +32,5 @@ or
 
 13. ./SeaChest_Format_x86_64-redhat-linux_R --device /dev/<> --setSectorSize 512 --confirm this-will-erase-data-and-may-render-the-drive-inoperable  (512e)
 
-## After it formats you should be all set..
+## After it formats you should be all set...
 
