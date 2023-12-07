@@ -1,0 +1,696 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=PT+Sans:wght@400;700&display=swap');
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+/*----------------------------NAVBAR SECTION CSS START-------------------------*/
+
+header {
+	display: flex;
+	padding: 30px;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	transition: 500ms;
+    background: #ffffff;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+
+nav {
+	margin-right: 70px;
+}
+
+nav a {
+	display: inline-block;
+	margin-left: 10px;
+	font-size: 15px;
+    font-weight: 400;
+	text-decoration: none;
+	color: #000000;
+	text-transform: uppercase;
+	border-bottom:  3px solid transparent;
+	padding: 10px 1px;
+	transition: 200ms;
+    font-family: 'PT Sans', sans-serif;
+    letter-spacing: 1px;
+}
+
+.active {
+	border-color: #00B3FF;
+}
+
+nav a:hover {
+	border-color: #00B3FF;
+}
+
+.logo {
+	flex: 1;
+	font-size: 28px;
+    font-weight: 700;
+	margin-left: 70px;
+	color: #000000;
+}
+
+#box{
+    width: 14px;
+    height: 14px;
+    background: #c7c7c7;
+    margin: 10px 0 0 -20px;
+    position: absolute;
+}
+
+#h-a{
+    text-decoration: none;
+    font-size: 15px !important;
+    margin: -40px 0 20px 200px;
+    color: #000;
+    font-weight: 400;
+    display: block;
+}
+
+.bgc {
+	background: #ffffff;
+	padding: 10px;
+}
+
+.bgc .logo h1{
+	font-size: 30px;
+	color: #000;
+}
+
+.bgc nav a {
+	color: #222;
+}
+
+@media (max-width: 769px){
+	header {
+		flex-direction: column;
+		padding: 20px;
+	}
+
+	nav {
+		padding: 15px;
+		margin: 0px;
+	}
+
+    .logo {
+        text-align: center;
+        margin: 15px 0 0 0;
+    }
+}
+
+@media (max-width: 900px){
+    #h-a{
+        display: none;
+    }
+}
+
+/*----------------------------NAVBAR SECTION CSS END-------------------------*/
+
+/*----------------------------HOME SECTION CSS START-------------------------*/
+
+.flex{
+    display: flex;
+    width: 100%;
+    height: auto;
+}
+
+.flex-1{
+    background: #C7C7C7;
+    height: auto;
+    width: 40%;
+}
+
+.flex-2{
+    width:60%;
+    display: flex;
+}
+
+.flex-2 .part-1{
+    width: 40%;
+    margin:450px 0 0 -33%;
+}
+
+.flex-2 .part-2{
+    width: 60%;
+    padding: 30px 15px;
+    margin:420px 0 650px 25px;
+}
+
+.flex-2 .part-1 .card{
+    width: 100%;
+    height:auto;
+    background: #C7C7C7;
+    padding: 30px 15px;
+}
+
+.card img{
+    width: 60%;
+    background-size: cover;
+    object-fit: contain;
+    display: block;
+    margin: 0px auto;
+}
+
+.card h2{
+    font-size: 30px;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 700;
+    color: #fff;
+    padding:25px 0 0 0;
+}
+
+.card .line{
+    width:50px;
+    height: 3px;
+    border-radius: 6px;
+    background: #000;
+    display: block;
+    margin: 25px auto;
+}
+
+.card p{
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
+    font-weight: 400;
+    color: #ffffff;
+    padding:0 0 0 0;
+    letter-spacing: 4px;
+}
+
+.flex-2 .part-1 .c-bottom{
+    background: #ffffff;
+    width: 100%;
+    height:auto;
+    padding: 15px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+.c-bottom i{
+    font-size: 28px;
+    color: #000;
+    padding-right: 18px;
+}
+
+.flex-2 .part-2 h1{
+    font-size: 100px;
+    line-height: 70px;
+    font-weight: 700;
+    color: #000000;
+    padding:0 0 0 0;
+}
+
+.flex-2 .part-2 h3{
+    font-size: 35px;
+    line-height: 45px;
+    font-weight: 500;
+    color: #000000;
+    padding:35px 0 25px 0;
+}
+
+.flex-2 .part-2 p{
+    font-size: 17px;
+    line-height: 30px;
+    font-weight: 400;
+    color: #000000;
+    padding:0 0 20px 0;
+    letter-spacing: 0.5px;
+    word-spacing: 1.5px;
+    width: 80%;
+    display: block;
+}
+
+.flex-2 .part-2 .link{
+    display: flex;
+    margin: 10px 0 40px 0;
+}
+
+.flex-2 .part-2 .link #res{
+    text-decoration: none;
+    background:#C7C7C7;
+    color: #fff;
+    display: block;
+    width: 150px;
+    height: 35px;
+    padding: 5px 0 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 35px;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.flex-2 .part-2 .link #res:hover{  
+    color:#000000;
+    border: 2px solid #3961f1;
+    background: #fff;
+}
+
+.flex-2 .part-2 .link #pro{
+    text-decoration: none;
+    background:#ffffff;
+    color: #000000;
+    display: block;
+    width: 150px;
+    height: 35px;
+    padding: 5px 0 0 0;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: center;
+    border-radius: 35px;
+    border: 2px solid #000;
+    text-transform: uppercase;
+    transition: 0.3s;
+    margin-left: 15px;
+}
+
+.flex-2 .part-2 .link #pro:hover{  
+    background:#3961f1;
+    color: #ffffff;
+    border: none;
+}
+
+@media screen and (max-width:1100px){
+    .flex-1{
+    width: 30%;
+    }
+
+    .flex-2{
+    width:70%;
+    }
+
+    .flex-2 .part-1{
+    margin:200px 0 0 -25%;
+    }
+
+    .flex-2 .part-2{
+    padding: 30px 15px;
+    margin:180px 0 150px 25px;
+    }
+
+    .flex-2 .part-2 p{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width:767px){
+    .flex{
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    
+    .flex-1{
+        display: none;
+    }
+    
+    .flex-2{
+        width:100%;
+        display: block;
+    }
+    
+    .flex-2 .part-1{
+        width: 100%;
+        margin:200px 0 0 0;
+    }
+    
+    .flex-2 .part-2{
+        width: 100%;
+        margin:30px 0 30px 0;
+    }
+
+    .flex-2 .part-2 h1{
+    font-size: 70px;
+    line-height: 80px;
+    }
+    
+    .flex-2 .part-2 h3{
+    font-size: 25px;
+    line-height: 35px;
+    padding:20px 0 20px 0;
+    }
+    
+    .flex-2 .part-2 p{
+    font-size: 18px;
+    line-height: 30px;
+    }
+}
+
+/*----------------------------HOME SECTION CSS END-------------------------*/
+
+/*----------------------------RESUME SECTION CSS START-------------------------*/
+
+.title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 180px 0 40px 0;
+}
+
+.title .square{
+    width:25px;
+    height:25px;
+    background: #fff;
+    margin-right: 15px;
+}
+
+.title h2{
+    font-size: 35px;
+    font-weight: 700;
+    line-height: 45px;
+    color: #000;
+}
+
+.title-p{
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0 15px 20px 15px;
+}
+
+.title-p p{
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 32px;
+    color: #000;
+    text-align: center;
+}
+
+.box{
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    padding: 30px 0;
+}
+
+.box .flex{
+    background: #fff;
+    width: 100%;
+    height: auto;
+    padding: 40px 20px;
+    display: flex;
+}
+
+.box .flex .f-1{
+    width: 45%;
+}
+
+.box .flex .f-2{
+    width: 55%;
+}
+
+.box .flex .f-3{
+    width: 100%;
+}
+
+.box .flex .f-1 h5{
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 35px;
+    color: #000;
+}
+
+.box .flex .f-1 #p-1{
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 27px;
+    color: #000;
+    padding: 15px 0 0 0;
+}
+
+.box .flex .f-1 #p-2{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #000;
+    padding: 12px 0 0 0;
+}
+
+.box .flex .f-1 ul li{
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 32px;
+    color: #000;
+    padding: 0 0 15px 0;
+}
+
+.box .flex .f-2 p{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 28px;
+    color: #000;
+    padding: 0 0 15px 0;
+}
+
+.sub-title h3{
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 38px;
+    color: #000;
+    padding: 15px 0;
+}
+
+.sub-title a{
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    padding: 9px 0 0 0;
+    display: block;
+    width:250px;
+    height: 45px;
+    border: 2px solid #000;
+    border-radius: 38px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin: -55px 0 0 0;
+    float: right;
+    transition: 0.3s;
+}
+
+.sub-title a:hover{
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.box .flex .f-3 h5{
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 35px;
+    color: #000;
+}
+
+.list{
+    display: flex;
+    width: 100%;
+}
+
+.list-side-1{
+    margin-right: 120px;
+}
+
+.list-ul{
+    display: flex;
+}
+
+.list-ul .square{
+    width: 14px;
+    height: 14px;
+    background: #C7C7C7;
+    margin: 17px 15px 0 0;
+}
+
+.list-ul p{
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #000;
+    padding: 12px 0 0 0;
+}
+
+@media screen and (max-width:1100px){
+    .box{
+        grid-template-columns: 1fr;
+        padding: 30px 40px;
+    }    
+}
+
+@media screen and (max-width:767px){
+    .title{
+        margin: 230px 0 20px 0;
+    }
+
+    .box{
+        padding: 30px 10px;
+    }    
+
+    .box .flex{
+        display: block;
+    }
+
+    .box .flex .f-1{
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .box .flex .f-2{
+        width: 100%;
+    }
+
+    .sub-title a{
+        margin: 15px 0 0 0;
+        float: none;
+    }
+
+    .list{
+        display:block;
+    }
+}
+
+/*----------------------------RESUME SECTION CSS END-------------------------*/
+
+/*----------------------------PROJECTS SECTION CSS START-------------------------*/
+
+.boxes{
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    padding: 30px 0;
+}
+
+.boxes .company{
+    background: #fff;
+    width: 100%;
+    height: auto;
+    display: flex;
+}
+
+.boxes .company .f-1{
+    width: 60%;
+}
+
+.boxes .company .f-2{
+    width: 40%;
+}
+
+.boxes .company .f-2 img{
+    object-fit: fill;
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.boxes .company .f-1 h4{
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 35px;
+    color: #000;
+    text-align: left;
+    padding: 60px 20px 0 20px;
+}
+
+.boxes .company .f-1 h5{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 26px;
+    color: #000;
+    text-align: left;
+    padding: 0 20px 0 20px;
+}
+
+.boxes .company .f-1 p{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    color: #000;
+    padding: 25px 20px 40px 20px;
+}
+
+@media screen and (max-width:1100px){
+    .boxes{
+        grid-template-columns: 1fr;
+        padding: 0 40px;
+        grid-row-gap: 20px;
+    }
+}
+
+@media screen and (max-width:767px){
+    .boxes .company{
+        display:block;
+    }
+    
+    .boxes .company .f-1{
+        width: 100%;
+    }
+    
+    .boxes .company .f-2{
+        width: 100%;
+    }
+
+    .boxes .company .f-1 p{
+        padding: 25px 20px 15px 20px;
+    }
+
+    .boxes .company .f-2 img{
+        margin-bottom: -5px;
+    }
+}
+
+/*----------------------------PROJECTS SECTION CSS END-------------------------*/
+
+/*----------------------------FOOTER SECTION CSS START-------------------------*/
+
+.footer{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 40px 180px;
+    background: #fff;
+}
+
+.footer .f-content h3{
+    text-align: center;
+    font-size:15px;
+    font-weight: 600;
+    line-height: 25px;
+    color: #000;
+}
+
+.footer .f-content p{
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 26px;
+    color: #000;
+}
+
+.footer .f-content i{
+    text-align: center;
+    font-size: 22px;
+    line-height: 32px;
+    color: #000;
+}
+
+@media screen and (max-width:1100px){  
+    .footer{
+        padding: 40px 70px;
+    } 
+}
+
+@media screen and (max-width:767px){  
+    .footer{
+        padding: 10px 20px 40px 20px;
+        grid-template-columns: 1fr;
+        grid-row-gap: 30px;
+    } 
+}
+
+/*----------------------------FOOTER SECTION CSS END-------------------------*/
