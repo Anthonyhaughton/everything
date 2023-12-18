@@ -21,11 +21,11 @@ Mappings:
       CIDR: 10.0.2.0/24
 Resources:
   VPC:
-    Type: 'AWS::EC2::VPC'
+    Type: AWS::EC2::VPC
     Properties:
       EnableDnsSupport: 'true'
       EnableDnsHostnames: 'true'
-      CidrBlock: !FindInMap 
+      CidrBlock: !FindInMap
         - SubnetConfig
         - VPC
         - CIDR
@@ -33,95 +33,93 @@ Resources:
         - Key: Name
           Value: ACloudGuru
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: VPC
   PublicSubnet1:
-    Type: 'AWS::EC2::Subnet'
+    Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: 
-        Fn::Select: 
-          - 0
-          - Fn::GetAZs: ""
-      CidrBlock: !FindInMap 
+      AvailabilityZone: !Select
+        - 0
+        - !GetAZs ''
+      CidrBlock: !FindInMap
         - SubnetConfig
         - Public1
         - CIDR
       Tags:
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: Public1
       MapPublicIpOnLaunch: true
   PublicSubnet2:
-    Type: 'AWS::EC2::Subnet'
+    Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: 
-        Fn::Select: 
-          - 1
-          - Fn::GetAZs: ""
-      CidrBlock: !FindInMap 
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs ''
+      CidrBlock: !FindInMap
         - SubnetConfig
         - Public2
         - CIDR
       Tags:
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: Public2
       MapPublicIpOnLaunch: true
   InternetGateway:
-    Type: 'AWS::EC2::InternetGateway'
+    Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: Public
   GatewayToInternet:
-    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
   PublicRouteTable:
-    Type: 'AWS::EC2::RouteTable'
+    Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref VPC
       Tags:
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: Public
   PublicRoute:
-    Type: 'AWS::EC2::Route'
+    Type: AWS::EC2::Route
     DependsOn: GatewayToInternet
     Properties:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
   PublicSubnetRouteTableAssociation1:
-    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet1
       RouteTableId: !Ref PublicRouteTable
   PublicSubnetRouteTableAssociation2:
-    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
   PublicNetworkAcl:
-    Type: 'AWS::EC2::NetworkAcl'
+    Type: AWS::EC2::NetworkAcl
     Properties:
       VpcId: !Ref VPC
       Tags:
         - Key: Application
-          Value: !Ref 'AWS::StackName'
+          Value: !Ref AWS::StackName
         - Key: Network
           Value: Public
   InboundHTTPPublicNetworkAclEntry:
-    Type: 'AWS::EC2::NetworkAclEntry'
+    Type: AWS::EC2::NetworkAclEntry
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: '100'
@@ -133,7 +131,7 @@ Resources:
         From: '80'
         To: '80'
   InboundHTTPSPublicNetworkAclEntry:
-    Type: 'AWS::EC2::NetworkAclEntry'
+    Type: AWS::EC2::NetworkAclEntry
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: '101'
@@ -145,7 +143,7 @@ Resources:
         From: '443'
         To: '443'
   InboundSSHPublicNetworkAclEntry:
-    Type: 'AWS::EC2::NetworkAclEntry'
+    Type: AWS::EC2::NetworkAclEntry
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: '102'
@@ -157,7 +155,7 @@ Resources:
         From: '22'
         To: '22'
   InboundEmphemeralPublicNetworkAclEntry:
-    Type: 'AWS::EC2::NetworkAclEntry'
+    Type: AWS::EC2::NetworkAclEntry
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: '103'
@@ -169,7 +167,7 @@ Resources:
         From: '1024'
         To: '65535'
   OutboundPublicNetworkAclEntry:
-    Type: 'AWS::EC2::NetworkAclEntry'
+    Type: AWS::EC2::NetworkAclEntry
     Properties:
       NetworkAclId: !Ref PublicNetworkAcl
       RuleNumber: '100'
@@ -181,35 +179,34 @@ Resources:
         From: '0'
         To: '65535'
   PublicSubnetNetworkAclAssociation1:
-    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
       SubnetId: !Ref PublicSubnet1
       NetworkAclId: !Ref PublicNetworkAcl
   PublicSubnetNetworkAclAssociation2:
-    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
       SubnetId: !Ref PublicSubnet2
       NetworkAclId: !Ref PublicNetworkAcl
-  BastionEC2: 
+  BastionEC2:
     Type: AWS::EC2::Instance
-    Properties: 
-      ImageId: "ami-0e999cbd62129e3b1"
+    Properties:
+      ImageId: ami-0e999cbd62129e3b1
       InstanceType: !Ref InstanceTypeParameter
-      UserData:
-        Fn::Base64:
-          !Sub |
-            #!/bin/bash -xe
-            yum install -y ec2-instance-connect
-            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-            install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-            curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-            sudo mv /tmp/eksctl /usr/local/bin
-      NetworkInterfaces: 
-      - AssociatePublicIpAddress: "true"
-        DeviceIndex: "0"
-        GroupSet: 
-          - Ref: "BastionSG"
-        SubnetId: !Ref PublicSubnet1
+      UserData: !Base64
+        Fn::Sub: |
+          #!/bin/bash -xe
+          yum install -y ec2-instance-connect
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: 'true'
+          DeviceIndex: '0'
+          GroupSet:
+            - !Ref BastionSG
+          SubnetId: !Ref PublicSubnet1
       Tags:
         - Key: Name
           Value: CLI Host
@@ -218,36 +215,36 @@ Resources:
   BastionSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-        GroupDescription: Allow ssh to client host
-        VpcId: !Ref VPC
-        SecurityGroupIngress:
+      GroupDescription: Allow ssh to client host
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
   RootRole:
-    Type: 'AWS::IAM::Role'
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               Service:
                 - ec2.amazonaws.com
             Action:
-              - 'sts:AssumeRole'
+              - sts:AssumeRole
       Path: /
       Policies:
         - PolicyName: root
           PolicyDocument:
-            Version: "2012-10-17"
+            Version: '2012-10-17'
             Statement:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
   RootInstanceProfile:
-    Type: 'AWS::IAM::InstanceProfile'
+    Type: AWS::IAM::InstanceProfile
     Properties:
       Path: /
       Roles:

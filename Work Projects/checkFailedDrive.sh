@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script uses an array to go though numerous machines and run the checkDish.sh script. All machines will send the reports to a central location
+# and clean up after itself.
+
 #vars
 todaysDate=$(date +%F)
 

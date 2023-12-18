@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# MegaRAID application is needed. This script is put on the host machines to check locally. Place this script on the machine in /root and you can
+# run it remotely if you have numerous machines using the checkFailedDrive.sh script.
+
 #vars
 name=$(hostname)
 
