@@ -1,1 +1,5 @@
+#bin
 *.exe
+*.hcl
+.terraform
+
