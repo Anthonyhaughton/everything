@@ -10,15 +10,6 @@ resource "aws_vpc" "terra_vpc" {
 }
 
 # Create 4 subnets - 2 public 2 private
-
-# resource "aws_subnet" "public" {
-#   count = length(var.subnet_cidrs_public)
-
-#   vpc_id            = aws_vpc.terra_vpc.id
-#   cidr_block        = var.subnet_cidrs_public[count.index]
-#   availability_zone = var.availability_zones[count.index]
-# }
-
 resource "aws_subnet" "pub_sub_a" {
   vpc_id                  = aws_vpc.terra_vpc.id
   cidr_block              = var.pub_sub_a_cidr
@@ -63,6 +54,7 @@ resource "aws_subnet" "priv_sub_b" {
   }
 }
 
+# Create IGW
 resource "aws_internet_gateway" "terra_igw" {
   vpc_id = aws_vpc.terra_vpc.id
 
@@ -71,6 +63,7 @@ resource "aws_internet_gateway" "terra_igw" {
   }
 }
 
+# Create Route Table
 resource "aws_route_table" "terra_rt" {
   vpc_id = aws_vpc.terra_vpc.id
 
@@ -79,9 +72,10 @@ resource "aws_route_table" "terra_rt" {
   }
 }
 
+# Create route to IGW
 resource "aws_route" "public_rt" {
   route_table_id         = aws_route_table.terra_rt.id
-  destination_cidr_block = "0.0.0.0/0"
+  destination_cidr_block = "0.0.0.0/0" # that IP is the whole internet
   gateway_id             = aws_internet_gateway.terra_igw.id
 }
 
@@ -129,7 +123,6 @@ resource "aws_key_pair" "terra_auth" {
 }
 
 # Create Launch Template for ASG
-
 resource "aws_launch_template" "terra_launch_template" {
   name = "web_server_template"
 
@@ -156,7 +149,7 @@ resource "aws_launch_template" "terra_launch_template" {
 
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [aws_security_group.terra_sg.id]
+    security_groups             = [aws_security_group.terra_sg.id] # SG needs to be defined here or apply will fail.
 
   }
 
@@ -168,16 +161,18 @@ resource "aws_launch_template" "terra_launch_template" {
     }
   }
 
-  user_data = filebase64("userdata.tpl")
+  user_data = filebase64("userdata.tpl") # pass script to install on the intanance 
 }
 
+
+# Create ASG 
 resource "aws_autoscaling_group" "terra_asg" {
   name                 = "terra_asg"
   desired_capacity     = 1
   max_size             = 2
   min_size             = 1
-  termination_policies = ["OldestInstance"]
-  vpc_zone_identifier  = [aws_subnet.pub_sub_a.id, aws_subnet.pub_sub_b.id]
+  termination_policies = ["OldestInstance"] # This will delete the oldest instance when it scales down
+  vpc_zone_identifier  = [aws_subnet.pub_sub_a.id, aws_subnet.pub_sub_b.id] # This is needed so that that it can depoly into both AZ's listed.
 
   launch_template {
     id      = aws_launch_template.terra_launch_template.id
@@ -185,6 +180,7 @@ resource "aws_autoscaling_group" "terra_asg" {
   }
 }
 
+# Create a scaling policy to increase # of intances. There is a CW alarm assoc with this.
 resource "aws_autoscaling_policy" "scale_up" {
   name                   = "server_scale_up"
   scaling_adjustment     = 1
@@ -193,6 +189,7 @@ resource "aws_autoscaling_policy" "scale_up" {
   autoscaling_group_name = aws_autoscaling_group.terra_asg.name
 }
 
+# Create a scaling policy to decrease # of intances. There is a CW alarm assoc with this.
 resource "aws_autoscaling_policy" "scale_down" {
   name                   = "server_scale_down"
   scaling_adjustment     = -1
@@ -201,6 +198,7 @@ resource "aws_autoscaling_policy" "scale_down" {
   autoscaling_group_name = aws_autoscaling_group.terra_asg.name
 }
 
+# Create CW Alarm. This alarm is what will trigger the scaling up.
 resource "aws_cloudwatch_metric_alarm" "scale_up" {
   alarm_name          = "cpuUtil_scaleUp"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -219,6 +217,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
   alarm_actions     = [aws_autoscaling_policy.scale_up.arn]
 }
 
+# Create CW Alarm. This alarm is what will trigger the scaling down.
 resource "aws_cloudwatch_metric_alarm" "scale_down" {
   alarm_name          = "cpuUtil_scaleDown"
   comparison_operator = "LessThanOrEqualToThreshold"
