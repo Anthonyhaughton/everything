@@ -64,6 +64,8 @@ resource "aws_route" "public_rt" {
 }
 
 # Associate public subnets to public rt. This got kind of high level with vars. Need to look into more.
+# 10:03PM - instead of trying to be fancy just create 2 route assoc and remake all 4 subnets indiviually
+
 resource "aws_route_table_association" "public" {
   count = length(var.subnet_cidrs_public)
 
