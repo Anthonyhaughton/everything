@@ -164,7 +164,7 @@ resource "aws_launch_template" "terra_launch_template" {
     resource_type = "instance"
 
     tags = {
-      Name = "public-lc"
+      Name = "webserver"
     }
   }
 
@@ -172,11 +172,12 @@ resource "aws_launch_template" "terra_launch_template" {
 }
 
 resource "aws_autoscaling_group" "terra_asg" {
-  #availability_zones  = ["us-east-1a", "us-east-1b"]
-  desired_capacity    = 1
-  max_size            = 2
-  min_size            = 1
-  vpc_zone_identifier = [aws_subnet.pub_sub_a.id, aws_subnet.pub_sub_b.id]
+  name                 = "terra_asg"
+  desired_capacity     = 1
+  max_size             = 2
+  min_size             = 1
+  termination_policies = ["OldestInstance"]
+  vpc_zone_identifier  = [aws_subnet.pub_sub_a.id, aws_subnet.pub_sub_b.id]
 
   launch_template {
     id      = aws_launch_template.terra_launch_template.id
@@ -184,16 +185,24 @@ resource "aws_autoscaling_group" "terra_asg" {
   }
 }
 
-resource "aws_autoscaling_policy" "terra_asg_scaling" {
-  name                   = "web_server_up"
+resource "aws_autoscaling_policy" "scale_up" {
+  name                   = "server_scale_up"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
+  cooldown               = 90
   autoscaling_group_name = aws_autoscaling_group.terra_asg.name
 }
 
-resource "aws_cloudwatch_metric_alarm" "terra_cw_alarm" {
-  alarm_name          = "cpuUtil"
+resource "aws_autoscaling_policy" "scale_down" {
+  name                   = "server_scale_down"
+  scaling_adjustment     = -1
+  adjustment_type        = "ChangeInCapacity"
+  cooldown               = 90
+  autoscaling_group_name = aws_autoscaling_group.terra_asg.name
+}
+
+resource "aws_cloudwatch_metric_alarm" "scale_up" {
+  alarm_name          = "cpuUtil_scaleUp"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = 2
   metric_name         = "CPUUtilization"
@@ -206,6 +215,24 @@ resource "aws_cloudwatch_metric_alarm" "terra_cw_alarm" {
     AutoScalingGroupName = aws_autoscaling_group.terra_asg.name
   }
 
-  alarm_description = "This metric monitors ec2 cpu utilization"
-  alarm_actions     = [aws_autoscaling_policy.terra_asg_scaling.arn]
+  alarm_description = "This metric monitors ec2 cpu utilization and scales up"
+  alarm_actions     = [aws_autoscaling_policy.scale_up.arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "scale_down" {
+  alarm_name          = "cpuUtil_scaleDown"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 120
+  statistic           = "Average"
+  threshold           = 10
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.terra_asg.name
+  }
+
+  alarm_description = "This metric monitors ec2 cpu utilization and scales down"
+  alarm_actions     = [aws_autoscaling_policy.scale_down.arn]
 }
