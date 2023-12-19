@@ -1,5 +1,5 @@
-#bin
+.idea
 *.exe
 *.hcl
 .terraform
-
+.vscode
