@@ -30,6 +30,4 @@ variable "private_subnet_numbers" {
         "us-east-1a" = 3
         "us-east-1b" = 4
     }
-
-
 }
