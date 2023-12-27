@@ -44,9 +44,11 @@ resource "aws_s3_bucket_policy" "s3_GetObj" {
     ]
   })
 
-  depends_on = [ 
+  # Using depends_on is a good way to force the public access block and policy to be applied one-by-one instead of concurrently
+  # Without this the bucket policy block will fail with an Access Denied error.
+   depends_on = [ 
     
-    "aws_s3_bucket_public_access_block.public_s3" # This fixed the issue with the bucket policy getting access denied!
+    "aws_s3_bucket_public_access_block.public_s3"
   ]
 }
 
