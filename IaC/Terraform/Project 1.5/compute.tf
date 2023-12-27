@@ -60,7 +60,7 @@ resource "aws_autoscaling_group" "terra_asg" {
   max_size             = 2
   min_size             = 1
   termination_policies = ["OldestInstance"] # This will delete the oldest instance when it scales down
-  vpc_zone_identifier  = [module.vpc.vpc_public_subnets, module.vpc.vpc_private_subnets] # I left off here with this error Inappropriate value for attribute "vpc_zone_identifier": element 0: string required. 12/26/2023
+  vpc_zone_identifier  = [module.vpc.vpc_public_subnets.id, module.vpc.vpc_private_subnets.id] # I left off here with this error Inappropriate value for attribute "vpc_zone_identifier": element 0: string required. 12/26/2023
 
   launch_template {
     id      = aws_launch_template.terra_launch_template.id
