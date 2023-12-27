@@ -1,10 +1,10 @@
 resource "aws_s3_bucket" "s3_site" {
   bucket = "devhaughton.com"
-
+  
   tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
+     Name        = "My bucket"
+     Environment = "Dev"
+   }
 }
 
 resource "aws_s3_object" "file_upload" {
@@ -16,7 +16,6 @@ resource "aws_s3_object" "file_upload" {
   source       = "website/${each.value}"
   content_type = each.value
 }
-
 
 # This block is needed to make the bucket fully public but for some reason I keep getting access denied and it looks
 # like the same is happeneing to others online, Not sure of the fix yet so adding policy in console.

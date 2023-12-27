@@ -1,17 +1,3 @@
-// ACM cert to attach to CF distro
-resource "aws_acm_certificate" "cert" {
-  domain_name       = "devhaughton.com"
-  validation_method = "DNS"
-
-  tags = {
-    Environment = "test"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 // CloudFront origin access identity to associate with the distribution
 resource "aws_cloudfront_origin_access_identity" "s3_origin_access_identity" {
   comment = "S3 OAI for the Cloudfront Distribution"
@@ -63,16 +49,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   viewer_certificate {
     cloudfront_default_certificate = false
-    acm_certificate_arn            = aws_acm_certificate.cert.arn
+    acm_certificate_arn            = var.acm_certificate
     ssl_support_method             = "sni-only"
-    minimum_protocol_version       = "TLSv1"
+    minimum_protocol_version       = "TLSv1.2_2021"
   }
-
-  depends_on = [
-    aws_acm_certificate.cert
-  ]
 }
-
-
-// Left off trying to figure out how to make a cert and add it to the CF distro. Because of validation it's kind of 
-// scuffed. May need to create a cert in the console and then figure out how to reference it from here.
