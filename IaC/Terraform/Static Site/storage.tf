@@ -24,9 +24,6 @@ resource "aws_s3_bucket_public_access_block" "public_s3" {
   block_public_policy = false
 }
 
-# This block is needed to make the bucket fully public but for some reason I keep getting access denied and it looks
-# like the same is happeneing to others online, Not sure of the fix yet so adding policy in console.
-
 resource "aws_s3_bucket_policy" "s3_GetObj" {
   bucket = aws_s3_bucket.s3_site.id
 
