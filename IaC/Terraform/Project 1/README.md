@@ -1,1 +1,1 @@
-![Architecture for this build.](./img.png)
+![](./img.png)
