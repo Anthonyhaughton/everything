@@ -39,6 +39,7 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
     for_each = var.private_subnet_numbers 
     vpc_id = aws_vpc.vpc.id
+    map_public_ip_on_launch = true
 
     cidr_block = cidrsubnet(aws_vpc.vpc.cidr_block, 12, each.value )
 
@@ -50,4 +51,37 @@ resource "aws_subnet" "private" {
         ManagaedBy = "terrafrom"
         Subnet = "${each.key}-${each.value}"
     }
+}
+
+# Create IGW
+resource "aws_internet_gateway" "terra_igw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "project_igw"
+  }
+}
+
+# Create Route Table
+resource "aws_route_table" "terra_rt" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "public_rt"
+  }
+}
+
+# Create route to IGW
+resource "aws_route" "public_rt" {
+  route_table_id         = aws_route_table.terra_rt.id
+  destination_cidr_block = "0.0.0.0/0" # that IP is the whole internet
+  gateway_id             = aws_internet_gateway.terra_igw.id
+}
+
+# Associate public subnets to public rt. How can I assoc 2 subnets in one block while also being able to tag them?
+resource "aws_route_table_association" "public_a" {
+  for_each = aws_subnet.public
+  
+  subnet_id      = aws_subnet.public[each.key].id
+  route_table_id = aws_route_table.terra_rt.id
 }
