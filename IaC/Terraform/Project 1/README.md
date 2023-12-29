@@ -1,3 +1,1 @@
-Architecture for this build.
-
-![What is this](./img.png)
+![Architecture for this build.](./img.png)
