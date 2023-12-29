@@ -1,3 +1,3 @@
 Architecture for this build.
 
-![Getting Started](./img.jpg)
+#![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
