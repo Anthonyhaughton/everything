@@ -1,3 +1,3 @@
 Architecture for this build.
 
-#![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![alt text](https://github.com/Anthonyhaughton/Coding-Projects/blob/main/IaC/Terraform/Project%201/img.png)
