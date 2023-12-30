@@ -45,7 +45,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_down" {
   period              = 30
   statistic           = "Average"
   threshold           = 10
-  treat_missing_data  = "notBreaching" # Treat missing data as "notBreaching" to avoid perpetual ALARM state
+  treat_missing_data  = "notBreaching" # Treat missing data as "notBreaching" to avoid perpetual ALARM state 
 
 
   dimensions = {

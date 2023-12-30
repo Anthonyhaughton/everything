@@ -1,3 +1,15 @@
+variable "vpc_cidr" {
+  type        = string
+  default     = "10.10.0.0/16"
+  description = "CIDR for VPC."
+}
+
+variable "map_public_ip_on_launch" {
+  type = string 
+  default = "true"
+  description = "Assoc IP on creation"
+}
+
 variable "environment" {
   type        = string
   description = "dev/test/prod"
@@ -14,12 +26,6 @@ variable "managed_by" {
   type = string
   description = "desc for tags"
   default = "terraform"
-}
-
-variable "vpc_cidr" {
-  type        = string
-  description = "The IP range for the VPC"
-  default     = "10.10.0.0/16"
 }
 
 variable "subnet_object" {
@@ -61,3 +67,4 @@ variable "az_number" {
     d = 4
   }
 }
+

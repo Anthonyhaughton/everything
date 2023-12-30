@@ -39,50 +39,6 @@ resource "aws_launch_template" "dev_launch_template" {
   user_data = filebase64("./docs/userdata.tpl") # pass script to install on the intanance 
 }
 
-resource "aws_lb" "dev_alb" {
-  name               = "dev-lb-tf"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.dev_public_sg.id]
-  subnets            = module.dev-vpc.subnet_ids # "module.lamp-vpc.subnet_ids is tuple with 4 elements" -> solution = remove brackets
-
-  enable_deletion_protection = false
-
-  tags = {
-    Project     = module.dev-vpc.project
-    Environment = module.dev-vpc.environment
-    ManagedBy   = module.dev-vpc.managedby
-  }
-}
-
-resource "aws_lb_target_group" "dev_target_group" {
-  name        = "dev-target-group"
-  port        = 80
-  protocol    = "HTTP"
-  target_type = "instance"
-  vpc_id      = module.dev-vpc.vpc_id
-
-  health_check {
-    path                = "/"   # Use the root path for health checks
-    port                = 80
-    protocol            = "HTTP"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-}
-
-resource "aws_lb_listener" "dev_listener" {
-  load_balancer_arn = aws_lb.dev_alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward" # This is what forwards the traffic from the EC2 instances to the alb
-    target_group_arn = aws_lb_target_group.dev_target_group.arn
-  }
-}
 
 # Create ASG 
 resource "aws_autoscaling_group" "dev_asg" {
@@ -109,4 +65,52 @@ resource "aws_autoscaling_group" "dev_asg" {
 resource "aws_autoscaling_attachment" "asg_attach_to_alb" {
   autoscaling_group_name = aws_autoscaling_group.dev_asg.id
   lb_target_group_arn    = aws_lb_target_group.dev_target_group.arn
+}
+
+# Create ALB 
+resource "aws_lb" "dev_alb" {
+  name               = "dev-lb-tf"
+  internal           = false # I believe this decides if it's internet facing or not.
+  load_balancer_type = "application" # can be application or network.
+  security_groups    = [aws_security_group.dev_public_sg.id]
+  subnets            = module.dev-vpc.subnet_ids # "module.lamp-vpc.subnet_ids is tuple with 4 elements" -> solution = remove brackets
+
+  enable_deletion_protection = false # If this is true terraform won't be able to destroy it.
+
+  tags = {
+    Project     = module.dev-vpc.project
+    Environment = module.dev-vpc.environment
+    ManagedBy   = module.dev-vpc.managedby
+  }
+}
+
+# Create a TG so the ALB can find the webservers 
+resource "aws_lb_target_group" "dev_target_group" {
+  name        = "dev-target-group"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "instance"
+  vpc_id      = module.dev-vpc.vpc_id
+
+  health_check {
+    path                = "/"   # Use the root path for health checks
+    port                = 80
+    protocol            = "HTTP"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+# Create a listener so that the ALB can forward traffic from the webservers.
+resource "aws_lb_listener" "dev_listener" {
+  load_balancer_arn = aws_lb.dev_alb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward" # This is what forwards the traffic from the EC2 instances to the alb
+    target_group_arn = aws_lb_target_group.dev_target_group.arn
+  }
 }

@@ -1,12 +1,12 @@
 resource "aws_vpc" "dev-vpc" {
-  #cidr_block = var.vpc_cidr
-  cidr_block = "10.10.0.0/16"
+  cidr_block = var.vpc_cidr
+  #cidr_block = "10.10.0.0/16"
 
   tags = {
-    Name        = "my-vpc"
+    Name        = "my-${var.environment}-vpc"
     Project     = var.project_name
     Environment = var.environment
-    ManagedBy   = "terraform"
+    ManagedBy   = var.managed_by
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_subnet" "public_subnets" {
   vpc_id                  = aws_vpc.dev-vpc.id
   cidr_block              = each.value.cidr
   availability_zone       = each.value.availability_zone
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = var.map_public_ip_on_launch 
 
   tags = {
     Name        = each.value.name
@@ -29,7 +29,7 @@ resource "aws_internet_gateway" "dev_igw" {
   vpc_id = aws_vpc.dev-vpc.id
 
   tags = {
-    Name        = "my-igw"
+    Name        = "my-${var.environment}-igw"
     Project     = var.project_name
     Environment = var.environment
     ManagedBy   = var.managed_by
@@ -40,7 +40,7 @@ resource "aws_route_table" "dev_rt" {
   vpc_id = aws_vpc.dev-vpc.id
 
   tags = {
-    Name        = "my-rt"
+    Name        = "my-${var.environment}-rt"
     Project     = var.project_name
     Environment = var.environment
     ManagedBy   = var.managed_by
