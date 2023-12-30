@@ -1,0 +1,78 @@
+Creating a New VPC (Via AWS Console) 12/5/23
+
+For this project, I’ll be creating the architecture shown. This is a simple use case for a highly available web server or a bastion host to be able to get into your private (offline) subnet where you can have files/databases that you don’t want accessible to the public.
+ 
+First, we will need to create a new VPC with the correct CIDR.
+1.	Navigate to the VPC Service from the console.
+2.	Create new VPC.
+3.	Name VPC and give IPv4 CIDR (10.10.0.0/16). We don’t need IPv6
+
+Now that the VPC has been created you’ll notice a route table and Network ACL have been made. This is default behavior. Every time a VPC is created, a route table and ACL is created as well. Now let’s create our 4 subnets in 2 different AZ’s (2 Private, 2 Public)
+1.	In the VPC Service, navigate to the Subnets tab.
+2.	Create new Subnets. This can be done in one swoop.
+3.	Choose the VPC we just created *not the default VPC*. Name the subnet and choose your CIDR (10.10.1.0/28) 16 IP’s. AWS reserves 5 IP’s by default, so you only have 11 useable.
+4.	Make sure to check the box to Enable auto-assign public IPv4 address. This may need to be done after creating the subnet and then going back to edit it. *Only for Public subnets*
+
+Next, we must associate the public subnets to the route table that was created with our project-vpc-01 VPC. We are doing this because in the next step we are going to add a route to a newly created Internet Gateway. 
+1.	In VPC, go to Route Tables.
+2.	Select the correct RT and select actions, go to “edit subnet associations”.
+3.	Choose the 2 public subnets. And “Save associations”.
+
+To allow our machines to have internet access, a IGW is needed. Now that we have our public subnets associated with the route table, we can create a IGW and point the route table to it. 
+1.	In VPC, navigate to “Internet Gateways”.
+2.	Create a IGW (project-IGW).
+3.	Next, attach the IGW to the project VPC.
+4.	Now, go back to Route Tables and choose the table you created earlier. Select “Actions” and click “Edit routes”.
+5.	Add route and allow all traffic (0.0.0.0./0) to the IGW target.
+
+Our VPC should be just about configured. Let’s spin up a EC2 instance in the public-subnet-a subnet in the project-VPC to make sure we have internet access. Before we do this let’s make a SG to permit SSH and HTTP access since this will be a web server.
+1.	Head to  the EC2 service.
+2.	Under Network & Security choose Security Groups and create a new one.
+3.	Name it and add a description, make sure to apply it to the VPC we are working with.
+4.	Add the Inbound rules for SSH, HTTP/S. You can put the source to 0.0.0.0/0 for the sake of this demo
+5.	SG’s are stateful so need to worry about “Ephemeral Ports”.
+
+Spin up an instance and choose the project VPC and public subnet and the SG we created and ssh in and try to ping google.com. You should get a reply which lets us know our route to the IGW is working correctly. Make sure to terminate the test instance.
+
+At this point we are ready to configure the ASG to create a launch template that will provision our webservers when we set the Minimum, Desired, and Maximum instances to spin up. 
+1.	Go to EC2.
+2.	Under Instances choose Launch Templates and create new.
+3.	Name the template, select an AMI (Amazon Linux).
+4.	For this demo we don’t need to include any thing other than the SG we created and some user-data (Advanced details all the way at the bottom) so we set up the webserver at start up:
+
+Bootstrap script for an Amazon Linux 2023 instance:
+
+#!/bin/bash
+yum update -y
+yum install httpd -y
+systemctl start httpd
+systemctl enable httpd
+cd /var/www/html
+echo "<html><body><h1>My IP is" > index.html 
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "$PUBLIC_IP" >> index.html
+echo "</h1></body></html>" >> index.html
+
+5.	Now that the template is created, we can make a ASG. Head to the section and create a new one.
+6.	Name it and choose the launch template we just created. Click Next.
+7.	Choose “Manually add instance types” and search for “T2.micro” and give it 100% weight.
+8.	We can scroll part everything until we get to Network settings; Select the VPC we have been working on.  
+9.	Going to skip a load balancer for this project but one can be created here. This is probably the better way to deploy this solution, but we will keep it simple.
+10.	We can scale this ASG using a Target tracking scaling policy and set it to monitor the CPU usage and if the average usage gets over %50 we can have the ASG deploy more instances to help the load.
+11.	Set the desired capacity to 1 instance.
+12.	For Scaling limits: Min=1 Max=3
+13.	Target tracking policy
+14.	Name the policy “CPU Usage”
+15.	Metric Type=Avg CPU util
+16.	Target value=50
+17.	Instance maintenance policy=No policy
+18.	Create ASG. 
+
+As soon as the ASG is created you’ll notice it will be provisioning an instance to meet the requirement of the desired capacity. Notice here after I terminiated the ASG instance one was spun up right away. 
+You could run a stress test to make the ASG scale and monitor the metrics  via CloudWatch.
+
+Now I’m trying to figure out how to deploy this solution as code (Terraform).
+
+
+
