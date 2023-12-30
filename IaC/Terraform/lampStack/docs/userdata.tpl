@@ -4,7 +4,7 @@ yum update -y
 yum install httpd -y
 systemctl start httpd
 systemctl enable httpd
-cd /var/www/html
+cd /var/www/html || exit
 echo "<html><body><h1>My IP is" > index.html 
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
