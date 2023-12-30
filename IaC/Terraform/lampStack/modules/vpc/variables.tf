@@ -4,6 +4,18 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "project_name" {
+  type = string
+  description = "Project name for the tags"
+  default = "project-alb"
+}
+
+variable "managed_by" {
+  type = string
+  description = "desc for tags"
+  default = "terraform"
+}
+
 variable "vpc_cidr" {
   type        = string
   description = "The IP range for the VPC"
@@ -49,30 +61,3 @@ variable "az_number" {
     d = 4
   }
 }
-
-
-
-
-# variable "public_subnet_azs" {
-#     type = map(number)
-#     description = "Map of AZ to a number that should be used for public subnets"
-
-#     default = {
-#         "us-west-1a" = 1
-#         "us-west-1b" = 2
-#         "us-west-1c" = 3
-#         "us-west-1d" = 4
-#     }
-# }
-
-# variable "public_subnet_cidrs" {
-#     type = map(number)
-#     description = "Map of cidrs to a number that should be used for public subnets"
-
-#     default = {
-#         "10.0.1.0/28" = 1
-#         "10.0.2.0/28" = 2
-#         "10.0.3.0/28" = 3
-#         "10.0.4.0/28" = 4
-#     }
-# }

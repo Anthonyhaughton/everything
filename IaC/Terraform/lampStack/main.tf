@@ -13,8 +13,8 @@ provider "aws" {
   profile                  = "vscode"
 }
 
-module "lamp-vpc" {
+module "dev-vpc" {
   source      = "./modules/vpc"
-  environment = "prod"
+  environment = "dev"
   vpc_cidr    = "10.10.0.0/16"
 }

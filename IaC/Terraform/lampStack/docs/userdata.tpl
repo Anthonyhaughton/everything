@@ -1,28 +1,12 @@
 #!/bin/bash
 
-# Install a LAMP stack
-
-sudo yum -y install httpd php
-
-# Start the web server
-sudo chkconfig httpd on
-sudo systemctl start httpd
-
-# Install the web pages for our lab
-if [ ! -f /var/www/html/immersion-day-app-php7.tar.gz ]; then
-   cd /var/www/html
-   wget https://aws-joozero.s3.ap-northeast-2.amazonaws.com/immersion-day-app-php7.tar.gz  
-   tar -xvfz immersion-day-app-php7.tar.gz
-fi
-
-# Install the AWS SDK for PHP
-if [ ! -f /var/www/html/aws.zip ]; then
-   cd /var/www/html
-   sudo mkdir vendor
-   cd vendor
-   wget https://docs.aws.amazon.com/aws-sdk-php/v3/download/aws.zip
-   unzip aws.zip
-fi
-
-# Update existing packages
-yum -y update
+yum update -y
+yum install httpd -y
+systemctl start httpd
+systemctl enable httpd
+cd /var/www/html
+echo "<html><body><h1>My IP is" > index.html 
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4)
+echo "$PUBLIC_IP" >> index.html
+echo "</h1></body></html>" >> index.html
