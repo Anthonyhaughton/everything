@@ -1,0 +1,28 @@
+- name: Install and configure Apache
+  hosts: ec2-34-205-81-226.compute-1.amazonaws.com
+  become: true
+  remote_user: ec2-user
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/ansible_keys.pem
+  tasks:
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Configure Apache to serve a custom index file
+      template:
+        src: /home/ansible/index.html
+        dest: /var/www/html/index.html
+      notify: restart Apache
+  handlers:
+    - name: restart Apache
+      service:
+        name: httpd
+        state: restarted

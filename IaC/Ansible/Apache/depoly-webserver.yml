@@ -1,0 +1,75 @@
+- name: Provision EC2 instance and install/configure Apache
+  hosts: localhost
+  vars:
+    image_id: "ami-016eb5d644c333ccb" # replace with your preffered image
+    instance_type: "t2.micro" # replace with your preferred instance type
+    key_name: "ansible_keys" # replace with your preferred key pair name
+    region: "us-east-1" # replace with your preferred region
+    subnet_id: "subnet-08ef7b3e735fe4487" # replace with your preferred subnet
+    vpc_subnet_id: "vpc-0d8933cd63859a454" # replace with your preferred subnet
+    security_groups: # replace with your preferred security group IDs
+      - "sg-0ac99e5a037c06194"
+      - "sg-0856fb08db7b466d0"
+  tasks:
+    - name: Create EC2 instance
+      amazon.aws.ec2_instance:
+        region: "{{ region }}"
+        name: "test"
+        image_id: "{{ image_id }}"
+        instance_type: "{{ instance_type }}"
+        key_name: "{{ key_name }}"
+        security_groups: "{{ security_groups }}"
+        count: 1
+        wait: yes
+        subnet_id: "{{ subnet_id }}"
+        vpc_subnet_id: "{{ vpc_subnet_id }}"
+        filters:
+          instance-state-name: running
+          "tag:Name": "My EC2 Instance"
+      register: running_instances
+
+    - name: Add new host to inventory
+      add_host:
+        name: "{{ running_instances.instances[0].public_dns_name }}"
+        groups: Server
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: /root/.ssh/ansible_keys.pem
+
+    - name: Wait for system to become reachable
+      ansible.builtin.wait_for_connection:
+        timeout: 900
+      delegate_to: "{{ running_instances.instances[0].public_dns_name }}"
+      
+- name: Install and configure Apache
+  hosts: Server
+  become: true
+  remote_user: ec2-user
+  vars:
+    ansible_ssh_private_key_file: /root/.ssh/ansible_keys.pem
+  tasks:
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Configure Apache to serve a custom index file
+      template:
+        src: /home/ansible/index.html
+        dest: /var/www/html/index.html
+
+    - name: Add CSS file for styling
+      template:
+        src: /home/ansible/style.css
+        dest: /var/www/html/style.css
+
+  handlers:
+    - name: restart Apache
+      service:
+        name: httpd
+        state: restarted
