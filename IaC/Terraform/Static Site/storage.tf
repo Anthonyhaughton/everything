@@ -45,7 +45,7 @@ resource "aws_s3_bucket_policy" "s3_GetObj" {
   # Without this the bucket policy block will fail with an Access Denied error.
    depends_on = [ 
     
-    "aws_s3_bucket_public_access_block.public_s3"
+    aws_s3_bucket_public_access_block.public_s3
   ]
 }
 

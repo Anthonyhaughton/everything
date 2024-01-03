@@ -13,3 +13,21 @@ variable dns_name {
   default     = "devhaughton.com"
   description = "Domain name for site."
 }
+
+variable region {
+  type = string
+  default = "us-east-1"
+  description = "AWS Region."
+}
+
+variable cred_file {
+  type = string
+  default = "~/.aws/credentials"
+  description = "Where the cred file is located."
+}
+
+variable profile {
+  type = string
+  default = "vscode"
+  description = "Profile to use."
+}

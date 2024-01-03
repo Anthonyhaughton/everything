@@ -1,0 +1,44 @@
+pipeline {
+    agent {
+        label ''
+    }
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('name_in_jenkins')
+        AWS_SECRET_ACCESS_KEY = credentials('name_in_jenkins')
+        AWS_REGION = "region"
+    }
+    stages {
+        stage('Stage 1') {
+            steps {
+                echo 'Building...'
+                sh '''
+                    bash lines here
+                '''
+            }
+        }
+        stage('Stage 2') {
+            steps {
+                echo 'Pushing...'
+                sh '''
+                    bash lines here
+                '''
+            }
+        }
+        stage('Stage 3 with try') {
+            steps {
+                echo 'Doing thing'
+                script {
+                    try {
+                        sh 'command that may fail'
+                    } catch (err) {
+                        echo 'it failed'
+                    } finally {
+                        sh '''
+                            Do all this now
+                        '''
+                    }
+                }
+            }
+        } 
+    }
+}
