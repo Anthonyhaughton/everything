@@ -3,3 +3,4 @@
 *.hcl
 .terraform
 .vscode
+.gitignore
