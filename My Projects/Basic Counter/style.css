@@ -1,0 +1,51 @@
+/* styles.css */
+
+body {
+    background-color: #333; /* Darker grey background color */
+    color: white; /* Text color */
+    margin: 0; /* Remove default margin */
+    font-family: 'Roboto', sans-serif; /* Set a default font-family */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .app {
+    text-align: center;
+  }
+  
+  h1 {
+    color: white; /* Text color */
+  }
+  
+  .counter-container {
+    background-color: #808080; /* Grey background color */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+  }
+  
+  .counter {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: white; /* Text color */
+  }
+  
+  .button-container button {
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .button-container button:hover {
+    background-color: #4fa3d1;
+  }
+  

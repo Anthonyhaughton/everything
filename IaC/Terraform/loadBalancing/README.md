@@ -10,4 +10,4 @@ Next I'm looking to dive into other services and maybe mess around with DB's and
 
 Architecture for this build but instead of west it's east bc west doesn't have 4 AZs up currently.
 
-![img](/IaC/TerraForm/loadBalancing/docs/img.png)
+![img](./docs/img.png)
