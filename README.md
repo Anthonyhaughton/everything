@@ -20,7 +20,7 @@ This repository serves as a showcase for various projects, including Python scri
       I've been using Jenkins along with Terraform to get an understanding of CI/CD.
     - **CloudFormation/**
       - CF is AWS's IaC tool, but I've been more focused on TF.
-      I plan to get moe of an understanding of it in the future but trying to learn both
+      I plan to get more of an understanding of it in the future but trying to learn both
       at the same time would be too much.
     - **Terraform/**
       - Terraform has been super fun to learn. It's cool to see infrastructure being built
