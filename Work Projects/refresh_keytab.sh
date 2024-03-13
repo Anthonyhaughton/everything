@@ -3,7 +3,7 @@
 clear
 
 # Make vars for script 
-realm=corp.arete.com
+realm=corp.realm.test
 todaysDate=$(date +%F)
 machine=$(hostname)
 
