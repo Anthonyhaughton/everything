@@ -56,6 +56,9 @@ sleep 10
 echo -n "Do you want to add this machine to the domain? (y/n) "
 read -r add_to_domain
 
+# 3/12/24: Need to add line here in case the machine doesnt have the packages installed
+# to add to domain like oddjob etc yum/dnf -y to aboid intervention obvi.
+
 if [ "$add_to_domain" = "y" ]; then
     # Discover the realm
     realm discover
@@ -126,7 +129,8 @@ if [ "$subscribe" = "y" ]; then
     echo -n "Do you want to install the latest Nvidia drivers? (y/n)"
     read -r drivers
 
-
+    # 3/12/24: Need to add check to see if machine is subscribed bc if so I think this can all be
+    # bypassed and all thats needed is the yum install line.
 
     if [ "$drivers" = "y" ]; then
 
