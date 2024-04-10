@@ -2,7 +2,7 @@
 
 ## If img isn't loading see picture in repo (img.png)
 
-![pic](./img.png)
+![pic](docs/img.png)
 
 For this Project, I took what I already built in the AWS Console but used Terraform to depoly it as code. See docs/build.txt for walkthough and notes for manual buildout. 
 
