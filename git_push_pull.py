@@ -1,6 +1,6 @@
 import subprocess
 
-def commit_and_push():
+def pull_commit_push():
     # Pull from the repository
     subprocess.run(["git", "pull"])
 
@@ -24,4 +24,4 @@ def commit_and_push():
     # Push to the repository
     subprocess.run(["git", "push"])
 
-commit_and_push()
+pull_commit_push()
